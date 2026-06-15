@@ -1,5 +1,4 @@
 import { CheckoutPage } from "@/pages/CheckoutPage";
-import { ProductPage } from "@/pages/ProductPage";
 import { ThankYouPage } from "@/pages/ThankYouPage";
 import { AuthProvider } from "@/providers/AuthProvider";
 import { BrowserRouter, Route, Routes } from "react-router";
@@ -25,7 +24,6 @@ function App() {
           <Routes>
             <Route path="/" element={<ShopLayout />}>
               <Route index element={<CheckoutPage />} />
-              <Route path="product" element={<ProductPage />} />
               <Route path="thank-you" element={<ThankYouPage />} />
             </Route>
             <Route path="/login" element={<LoginPage />} />

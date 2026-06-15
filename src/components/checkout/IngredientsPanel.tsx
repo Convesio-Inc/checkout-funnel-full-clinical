@@ -1,3 +1,15 @@
+/**
+ * IngredientsPanel
+ * -----------------------------------------------------------------------------
+ * Forest panel listing the headline ingredients in a leaf-prefixed grid. All
+ * content lives inline.
+ *
+ * Marker: data-section="ingredients"
+ * -----------------------------------------------------------------------------
+ */
+
+import { Icon } from "@/components/icons";
+
 const INGREDIENTS = [
   "Spirulina",
   "Chlorella",
@@ -15,31 +27,20 @@ const INGREDIENTS = [
 
 export function IngredientsPanel() {
   return (
-    <div
-      data-section="ingredients"
-      className="bg-[#1a3028] rounded-[10px] p-4 mb-3"
-    >
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-[11px] font-bold uppercase tracking-[0.1em] text-white">
-          What's Inside
-        </span>
-        <span className="text-[11px] text-[#7ab89a] uppercase tracking-[0.08em]">
-          32 Ingredients
-        </span>
+    <div data-section="ingredients" className="gloss-forest text-bone rounded-md p-5">
+      <div className="flex items-baseline justify-between">
+        <div className="text-[10.5px] uppercase tracking-[0.2em] text-bone/60">What's inside</div>
+        <div className="text-[10.5px] uppercase tracking-[0.18em] text-bone/60">32 ingredients</div>
       </div>
-      <div className="grid grid-cols-3 gap-y-[6px] gap-x-2">
+      <div className="mt-3 grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-1.5 text-[13px]">
         {INGREDIENTS.map((name) => (
-          <span
-            key={name}
-            className="text-[11px] text-[#a8cdb8] flex items-center gap-1"
-          >
-            🌿 {name}
-          </span>
+          <div key={name} className="flex items-center gap-2 text-bone/90">
+            <Icon.Leaf className="w-3.5 h-3.5 text-sage" />
+            <span>{name}</span>
+          </div>
         ))}
       </div>
-      <p className="text-[10px] text-[#7a9a8a] mt-2.5">
-        + 20 more — full lab panel on the product page.
-      </p>
+      <div className="mt-3 text-[11.5px] text-bone/55">+ 20 more in the full formula.</div>
     </div>
   );
 }

@@ -1,9 +1,9 @@
 /**
  * SectionCard
  * -----------------------------------------------------------------------------
- * Shared wrapper for the form sections (Customer / Shipping / Payment). Renders
- * a `<section>` as a self-contained card with a titled header, so each section
- * in the form column is visually distinct.
+ * Shared white "gloss" card with an optional titled header. Used by the
+ * thank-you page surfaces. Title renders in the Instrument Serif display face
+ * by default; pass `titleClassName` to override.
  *
  * Markers:
  *   - root             data-section="<section>" + data-slot="section-card"
@@ -13,10 +13,9 @@
 
 import * as React from "react";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
-export interface SectionCardProps extends React.ComponentProps<"div"> {
+export interface SectionCardProps extends React.ComponentProps<"section"> {
   section: string;
   title?: string;
   titleClassName?: string;
@@ -31,31 +30,25 @@ export function SectionCard({
   ...rest
 }: SectionCardProps) {
   return (
-    <Card
+    <section
       data-section={section}
       data-slot="section-card"
-      className={cn(
-        "",
-        className,
-      )}
+      className={cn("gloss-card rounded-md overflow-hidden", className)}
       {...rest}
     >
       {title ? (
-        <CardHeader className="px-5 sm:px-6 border-b border-border pb-4">
-          <CardTitle
+        <header className="px-5 sm:px-6 pt-5 pb-4 border-b border-line2">
+          <h2
             data-slot="section-title"
-            className={cn(
-              "text-base font-semibold tracking-tight",
-              titleClassName,
-            )}
+            className={cn("serif text-[24px] leading-[1.1] tracking-tight text-ink", titleClassName)}
           >
             {title}
-          </CardTitle>
-        </CardHeader>
+          </h2>
+        </header>
       ) : null}
-      <CardContent className="px-5 sm:px-6">
+      <div className="px-5 sm:px-6 py-5">
         <div className="flex flex-col gap-3">{children}</div>
-      </CardContent>
-    </Card>
+      </div>
+    </section>
   );
 }

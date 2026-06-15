@@ -1,21 +1,31 @@
 /**
  * ShippingInfo
  * -----------------------------------------------------------------------------
- * Shipping address form. Layout matches the reference design:
- *   [First Name] [Last Name]
- *   [Street Address        ]
- *   [Apt / Suite] [City    ]
- *   [State      ] [Zip     ]
+ * U.S. shipping address. Layout matches the reference:
+ *   [First name] [Last name]
+ *   [Street address          ]
+ *   [Apt / Suite] [City       ]
+ *   [State ▾    ] [ZIP        ]
  *
- * Fully controlled; parent owns state. Every field (except Apt / Suite) is
- * `required`. Edit labels and placeholders directly in this file.
+ * Fully controlled; the parent owns state. Country is fixed to the U.S. (see
+ * the note on the section header) so it isn't collected here. Edit labels,
+ * placeholders, and the state list directly in this file.
  *
  * Markers:
- *   - root           data-section="shipping-info"
  *   - field markers  data-field="first-name" | "last-name" | "street" |
  *                    "apt-suite" | "city" | "state" | "zip"
  * -----------------------------------------------------------------------------
  */
+
+import { Field, inputCls } from "@/components/checkout/form-atoms";
+
+const US_STATES = [
+  "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA",
+  "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD",
+  "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
+  "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
+  "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY",
+];
 
 export interface ShippingInfoValue {
   firstName: string;
@@ -33,131 +43,98 @@ export interface ShippingInfoProps {
   onChange: (next: ShippingInfoValue) => void;
 }
 
-const inputCls =
-  "w-full h-9 rounded-[6px] border border-[#e0d9cc] bg-white px-2.5 text-[13px] text-[#333] placeholder:text-[#ccc] focus:outline-none focus:border-[#1a3028] transition-colors";
-
-const labelCls =
-  "block text-[10px] font-semibold text-[#999] uppercase tracking-[0.08em] mb-[5px]";
-
-function Field({
-  id,
-  label,
-  optional,
-  "data-field": dataField,
-  ...props
-}: React.InputHTMLAttributes<HTMLInputElement> & {
-  id: string;
-  label: string;
-  optional?: boolean;
-  "data-field": string;
-}) {
-  return (
-    <div data-field={dataField}>
-      <div className="flex items-baseline gap-1 mb-[5px]">
-        <label htmlFor={id} className={labelCls} style={{ marginBottom: 0 }}>
-          {label}
-        </label>
-        {optional && (
-          <span className="text-[10px] text-[#bbb] italic">optional</span>
-        )}
-      </div>
-      <input id={id} className={inputCls} {...props} />
-    </div>
-  );
-}
-
 export function ShippingInfo({ value, onChange }: ShippingInfoProps) {
   const set =
     (key: keyof ShippingInfoValue) =>
-    (e: React.ChangeEvent<HTMLInputElement>) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
       onChange({ ...value, [key]: e.target.value });
 
   return (
-    <div className="flex flex-col gap-2.5">
-      {/* Row 1: First Name / Last Name */}
-      <div className="grid grid-cols-2 gap-2.5">
-        <Field
-          data-field="first-name"
-          id="ship-first-name"
-          label="First Name"
+    <div className="grid grid-cols-2 gap-3">
+      <Field label="First name" span="col-span-1" dataField="first-name">
+        <input
+          className={inputCls}
+          type="text"
           autoComplete="given-name"
           placeholder="Alex"
           required
           value={value.firstName}
           onChange={set("firstName")}
         />
-        <Field
-          data-field="last-name"
-          id="ship-last-name"
-          label="Last Name"
+      </Field>
+      <Field label="Last name" span="col-span-1" dataField="last-name">
+        <input
+          className={inputCls}
+          type="text"
           autoComplete="family-name"
           placeholder="Mendez"
           required
           value={value.lastName}
           onChange={set("lastName")}
         />
-      </div>
-
-      {/* Row 2: Street Address */}
-      <Field
-        data-field="street"
-        id="ship-street"
-        label="Street Address"
-        autoComplete="address-line1"
-        placeholder="2114 Larkspur Lane"
-        required
-        value={value.street}
-        onChange={set("street")}
-      />
-
-      {/* Row 3: Apt / Suite + City */}
-      <div className="grid grid-cols-2 gap-2.5">
-        <Field
-          data-field="apt-suite"
-          id="ship-apt-suite"
-          label="Apt / Suite"
-          optional
+      </Field>
+      <Field label="Street address" dataField="street">
+        <input
+          className={inputCls}
+          type="text"
+          autoComplete="address-line1"
+          placeholder="2114 Larkspur Lane"
+          required
+          value={value.street}
+          onChange={set("street")}
+        />
+      </Field>
+      <Field label="Apt / Suite" span="col-span-1" optional dataField="apt-suite">
+        <input
+          className={inputCls}
+          type="text"
           autoComplete="address-line2"
           placeholder="—"
           value={value.aptSuite}
           onChange={set("aptSuite")}
         />
-        <Field
-          data-field="city"
-          id="ship-city"
-          label="City"
+      </Field>
+      <Field label="City" span="col-span-1" dataField="city">
+        <input
+          className={inputCls}
+          type="text"
           autoComplete="address-level2"
           placeholder="Portland"
           required
           value={value.city}
           onChange={set("city")}
         />
-      </div>
-
-      {/* Row 4: State + Zip */}
-      <div className="grid grid-cols-2 gap-2.5">
-        <Field
-          data-field="state"
-          id="ship-state"
-          label="State"
+      </Field>
+      <Field label="State" span="col-span-1" dataField="state">
+        <select
+          className={inputCls}
           autoComplete="address-level1"
-          placeholder="OR"
           required
           value={value.stateOrProvince}
           onChange={set("stateOrProvince")}
-        />
-        <Field
-          data-field="zip"
-          id="ship-zip"
-          label="Zip"
-          autoComplete="postal-code"
+        >
+          <option value="" disabled>
+            State
+          </option>
+          {US_STATES.map((s) => (
+            <option key={s} value={s}>
+              {s}
+            </option>
+          ))}
+        </select>
+      </Field>
+      <Field label="ZIP" span="col-span-1" dataField="zip">
+        <input
+          className={inputCls}
+          type="text"
           inputMode="numeric"
+          autoComplete="postal-code"
           placeholder="97214"
           required
           value={value.zip}
           onChange={set("zip")}
         />
-      </div>
+      </Field>
     </div>
   );
 }

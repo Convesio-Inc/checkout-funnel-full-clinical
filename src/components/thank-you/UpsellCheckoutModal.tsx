@@ -17,7 +17,6 @@
  */
 
 import { useState } from "react";
-import { LockIcon } from "lucide-react";
 
 import {
     Dialog,
@@ -27,6 +26,7 @@ import {
     DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Icon } from "@/components/icons";
 import type { UpsellProductConfig } from "@/components/thank-you/UpsellOfferBanner";
 import type { OrderContext } from "@/hooks/useThankYouPayment";
 
@@ -42,7 +42,7 @@ export interface UpsellCheckoutModalProps {
 type UpsellStatus = "idle" | "processing" | "queued" | "failed";
 
 const ctaClassName =
-    "h-12 w-full rounded-lg border-0 bg-linear-to-b from-pay-cta-from to-pay-cta-to text-base font-extrabold tracking-[0.02em] text-pay-cta-foreground uppercase shadow-pay-cta transition-[transform,box-shadow,background-image] duration-200 hover:from-pay-cta-hover-from hover:to-pay-cta-hover-to hover:shadow-pay-cta cursor-pointer";
+    "order-cta gloss-cta h-12 w-full rounded-md text-base font-bold tracking-[0.04em] text-white uppercase cursor-pointer";
 
 export function UpsellCheckoutModal({
     upsell,
@@ -165,25 +165,25 @@ export function UpsellCheckoutModal({
                 {/* Product summary */}
                 <div
                     data-slot="upsell-product-summary"
-                    className="flex items-center gap-3 rounded-lg border border-border bg-muted/30 p-3"
+                    className="flex items-center gap-3 rounded-md border border-line bg-bone2/40 p-3"
                 >
                     <img
                         src={upsell.image.src}
                         alt={upsell.image.alt}
-                        className="h-14 w-14 shrink-0 rounded-lg border border-border object-cover"
+                        className="h-14 w-14 shrink-0 rounded-md border border-line object-cover"
                     />
                     <div className="min-w-0 flex-1">
-                        <p className="text-sm font-semibold text-foreground">
+                        <p className="text-sm font-semibold text-ink">
                             {upsell.name}
                         </p>
                         <div className="mt-1 flex items-center gap-2">
-                            <span className="text-sm font-bold text-foreground">
+                            <span className="num text-sm font-bold text-ink">
                                 {upsell.salePrice}
                             </span>
-                            <span className="text-sm text-muted-foreground line-through">
+                            <span className="num text-sm text-ink3 line-through">
                                 {upsell.regularPrice}
                             </span>
-                            <span className="rounded-full bg-destructive px-2 py-0.5 text-xs font-bold text-white">
+                            <span className="rounded-full bg-amber px-2 py-0.5 text-xs font-bold text-white">
                                 {upsell.discountLabel}
                             </span>
                         </div>
@@ -194,7 +194,7 @@ export function UpsellCheckoutModal({
                     <p
                         data-slot="upsell-error"
                         role="alert"
-                        className="text-sm text-destructive"
+                        className="text-sm text-rust"
                     >
                         {error}
                     </p>
@@ -203,7 +203,7 @@ export function UpsellCheckoutModal({
                 {isQueued && queuedMessage && (
                     <p
                         data-slot="upsell-queued-notice"
-                        className="text-sm text-muted-foreground"
+                        className="text-sm text-ink3"
                     >
                         {queuedMessage}
                     </p>
@@ -235,8 +235,8 @@ export function UpsellCheckoutModal({
                     )}
 
                     {!isQueued && (
-                        <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
-                            <LockIcon className="h-3 w-3" aria-hidden="true" />
+                        <div className="flex items-center justify-center gap-1.5 text-xs text-ink3">
+                            <Icon.Lock className="h-3 w-3" aria-hidden="true" />
                             Secure checkout
                         </div>
                     )}
@@ -248,7 +248,7 @@ export function UpsellCheckoutModal({
                             size="sm"
                             onClick={onClose}
                             disabled={isProcessing}
-                            className="h-auto px-0 text-xs text-muted-foreground"
+                            className="h-auto px-0 text-xs text-ink3"
                         >
                             No thanks, I'll skip this offer
                         </Button>

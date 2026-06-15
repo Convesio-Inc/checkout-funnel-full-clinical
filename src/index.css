@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -5,7 +6,33 @@
 
 @theme inline {
     --font-heading: var(--font-sans);
-    --font-sans: "Geist Variable", Arial, Helvetica, sans-serif;
+    --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+    --font-mono: "Geist Mono", ui-monospace, monospace;
+    --font-serif: "Instrument Serif", ui-serif, Georgia, serif;
+
+    /* === MERIDIAN PALETTE (from reference) === */
+    --color-bone: #faf7f0;
+    --color-bone2: #f3efe4;
+    --color-paper: #ffffff;
+    --color-ink: #0f1310;
+    --color-ink2: #34372f;
+    --color-ink3: #6b6f64;
+    --color-line: #e4dfce;
+    --color-line2: #efe9d6;
+    --color-forest: #1d3a2d;
+    --color-forest2: #2a5141;
+    --color-forest3: #3c6a55;
+    --color-moss: #4a6b53;
+    --color-sage: #cfd9c8;
+    --color-amber: #e07b1f;
+    --color-amber2: #c25f15;
+    --color-amber3: #f6a755;
+    --color-amber-soft: #fbe8c8;
+    --color-rust: #9c3a1a;
+    --color-gold: #caa15a;
+    --color-gold2: #8d6a2a;
+
+    /* === shadcn / app shell tokens === */
     --color-brand: var(--brand);
     --color-brand-foreground: var(--brand-foreground);
     --color-brand-accent: var(--brand-accent);
@@ -39,14 +66,6 @@
     --color-background: var(--background);
     --color-header-background: var(--header-background);
     --color-header-border: var(--header-border);
-    --color-pay-cta-from: var(--pay-cta-from);
-    --color-pay-cta-to: var(--pay-cta-to);
-    --color-pay-cta-hover-from: var(--pay-cta-hover-from);
-    --color-pay-cta-hover-to: var(--pay-cta-hover-to);
-    --color-pay-cta-foreground: var(--pay-cta-foreground);
-    --shadow-pay-cta: var(--pay-cta-shadow);
-    --shadow-pay-cta-hover: var(--pay-cta-shadow-hover);
-    --animate-pay-cta-pulse: pay-cta-pulse 2.4s ease-in-out infinite;
     --radius-sm: calc(var(--radius) * 0.6);
     --radius-md: calc(var(--radius) * 0.8);
     --radius-lg: var(--radius);
@@ -55,27 +74,18 @@
 }
 
 /* === BRAND THEME ===
- * The template ships as a single light theme inspired by the reference mock.
- * Change these three tokens to re-skin the primary CTA and accent color
- * without touching any component.
- *
+ * Storefront chrome derives from the Meridian palette above; the app shell
+ * (dashboard / login) keeps the neutral shadcn tokens below.
  */
 :root {
-    --brand: #1a3028;
-    --brand-foreground: #ffffff;
-    --brand-accent: #3a6a4a;
+    --brand: #1d3a2d;
+    --brand-foreground: #faf7f0;
+    --brand-accent: #3c6a55;
     --brand-accent-foreground: #ffffff;
-    --brand-muted: #a8cdb8;
-    --pay-cta-from: #c8620a;
-    --pay-cta-to: #a84e08;
-    --pay-cta-hover-from: #b55508;
-    --pay-cta-hover-to: #963f05;
-    --pay-cta-foreground: #ffffff;
-    --pay-cta-shadow: 0 12px 20px rgba(200, 98, 10, 0.34);
-    --pay-cta-shadow-hover: 0 16px 26px rgba(200, 98, 10, 0.40);
+    --brand-muted: #cfd9c8;
 
-    --background: oklch(0,0,1);
-    --header-background: oklch(0,0,1);
+    --background: oklch(1 0 0);
+    --header-background: oklch(1 0 0);
     --header-border: oklch(0.9488 0.0054 95.1);
     --foreground: oklch(0.18 0.015 260);
     --card: oklch(1 0 0);
@@ -105,106 +115,169 @@
     --sidebar-ring: oklch(0.66 0.19 262);
 }
 
-@keyframes pay-cta-pulse {
-  0%, 100% {
-    transform: scale(1);
-    box-shadow: var(--pay-cta-shadow);
-  }
-  50% {
-    transform: scale(1.02);
-    box-shadow: 0 16px 28px rgba(200, 98, 10, 0.43);
-  }
+/* === Typography helpers (match reference) === */
+.num {
+    font-family: "Geist Mono", ui-monospace, monospace;
+    font-feature-settings: "tnum" 1;
+}
+.serif {
+    font-family: "Instrument Serif", ui-serif, Georgia, serif;
 }
 
-/* ── Pay CTA: breathing glow + sheen sweep ── */
-.pay-cta {
-  position: relative;
-  overflow: hidden;
-  box-shadow:
-    0 1px 0 rgba(255,255,255,0.18) inset,
-    0 -2px 0 rgba(100,30,0,0.35) inset,
-    0 1px 2px rgba(100,30,0,0.15),
-    0 14px 28px -10px rgba(200,98,10,0.50);
-  transition: transform 0.14s cubic-bezier(.2,.7,.2,1), background-color 0.15s ease, box-shadow 0.14s ease;
-  animation: cta-breathe 3.6s ease-in-out infinite;
+/* === Meridian surfaces ===
+ * Flat white card with a single hairline + soft drop.
+ */
+.gloss-card {
+    background: #ffffff;
+    border: 1px solid #e4dfce;
+    box-shadow: 0 1px 0 rgba(22, 24, 20, 0.02), 0 18px 36px -28px rgba(22, 24, 20, 0.18);
 }
-.pay-cta:hover:not(:disabled) { background-color: #b55508; }
-.pay-cta:active:not(:disabled) {
-  transform: translateY(1px) scale(.995);
-  background-color: #963f05;
-  animation-play-state: paused;
-}
-.pay-cta:disabled { animation-play-state: paused; }
-
-.pay-cta::before {
-  content: '';
-  position: absolute;
-  top: 0; bottom: 0; left: -45%;
-  width: 38%;
-  transform: skewX(-22deg);
-  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.42) 50%, rgba(255,255,255,0) 100%);
-  pointer-events: none;
-  animation: cta-sheen 5s cubic-bezier(.2,.7,.2,1) infinite;
+.gloss-card-flat {
+    background: #ffffff;
+    border: 1px solid #e4dfce;
 }
 
-@keyframes cta-breathe {
-  0%, 100% { box-shadow: 0 1px 0 rgba(255,255,255,0.18) inset, 0 -2px 0 rgba(100,30,0,0.35) inset, 0 1px 2px rgba(100,30,0,0.15), 0 14px 28px -10px rgba(200,98,10,0.50); }
-  50%       { box-shadow: 0 1px 0 rgba(255,255,255,0.18) inset, 0 -2px 0 rgba(100,30,0,0.35) inset, 0 1px 2px rgba(100,30,0,0.15), 0 18px 36px -8px rgba(200,98,10,0.78); }
-}
-@keyframes cta-sheen {
-  0%   { left: -45%; }
-  35%  { left: 145%; }
-  100% { left: 145%; }
+/* Forest — solid, lightest top-edge highlight only */
+.gloss-forest {
+    background: #1d3a2d;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08) inset;
 }
 
-.pay-cta .cta-arrow-slot {
-  transition: transform 0.25s cubic-bezier(.2,.7,.2,1), background-color 0.15s ease;
+/* Amber CTA — the one button that keeps the gloss */
+.gloss-cta {
+    background:
+        radial-gradient(120% 60% at 50% 0%, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0) 55%),
+        linear-gradient(180deg, #ee8a32 0%, #d97218 50%, #be5e13 100%);
+    box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.55) inset,
+        0 -2px 0 rgba(124, 46, 8, 0.5) inset,
+        0 0 0 1px rgba(124, 46, 8, 0.5),
+        0 12px 28px -10px rgba(194, 95, 21, 0.5);
+    position: relative;
+    overflow: hidden;
+    transition: filter 0.2s ease, transform 0.1s ease;
 }
-.pay-cta:hover:not(:disabled) .cta-arrow-slot {
-  transform: translateX(3px);
-  background-color: rgba(255,255,255,0.18);
+.gloss-cta::before {
+    content: '';
+    position: absolute;
+    inset: 1px 1px auto 1px;
+    height: 42%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
+    border-radius: inherit;
+    pointer-events: none;
+}
+.gloss-cta::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -30%;
+    width: 22%;
+    transform: skewX(-22deg);
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.4) 50%, rgba(255, 255, 255, 0) 100%);
+    pointer-events: none;
+    animation: sheen 7s ease-in-out 2s infinite;
+}
+@keyframes sheen {
+    0% { left: -30%; }
+    60% { left: 130%; }
+    100% { left: 130%; }
+}
+.gloss-cta:hover:not(:disabled) { filter: brightness(1.04); }
+.gloss-cta:active:not(:disabled) {
+    transform: translateY(1px);
+    box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.35) inset,
+        0 -1px 0 rgba(124, 46, 8, 0.5) inset,
+        0 0 0 1px rgba(124, 46, 8, 0.55),
+        0 4px 12px -6px rgba(194, 95, 21, 0.5);
+}
+.gloss-cta:disabled { filter: saturate(0.6) brightness(0.97); cursor: not-allowed; }
+
+/* Pill on dark backgrounds — hairline only */
+.gloss-pill {
+    background: rgba(255, 255, 255, 0.06);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.16);
 }
 
-.pay-cta .cta-main {
-  transition: opacity 0.2s ease, transform 0.2s ease;
+/* Inputs — flat white, thin border, simple focus ring */
+.gloss-input {
+    background: #ffffff;
+    border: 1px solid #d6d0bd;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
-.pay-cta[data-state="busy"] .cta-main,
-.pay-cta[data-state="done"] .cta-main {
-  opacity: 0;
-  transform: translateY(-2px);
-  pointer-events: none;
-}
-.pay-cta .cta-overlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  opacity: 0;
-  transform: translateY(2px);
-  transition: opacity 0.2s ease, transform 0.2s ease;
-  pointer-events: none;
-}
-.pay-cta[data-state="busy"] .cta-overlay-busy,
-.pay-cta[data-state="done"] .cta-overlay-done {
-  opacity: 1;
-  transform: translateY(0);
-}
-.pay-cta[data-state="done"] {
-  background-color: #b55508;
-  animation: none;
+.gloss-input:focus {
+    border-color: #1d3a2d;
+    box-shadow: 0 0 0 3px rgba(29, 58, 45, 0.12);
+    outline: none;
 }
 
+/* Selected bundle: double-line forest ring */
+.ring-forest {
+    background: #ffffff;
+    border: 1px solid #1d3a2d;
+    box-shadow: 0 0 0 1px #1d3a2d inset;
+}
+
+/* Product placeholder backdrop — quiet ivory wash */
+.stripes {
+    background:
+        radial-gradient(70% 55% at 50% 38%, #ffffff 0%, rgba(255, 255, 255, 0) 75%),
+        #f0ead8;
+}
+
+.rule { border-top: 1px solid #ece5d2; }
+
+@keyframes livedot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.55; transform: scale(0.85); }
+}
+.livedot { animation: livedot 1.6s ease-in-out infinite; }
+
+@keyframes tick {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+.tick { animation: tick 1s steps(2, end) infinite; }
+
+/* === Order CTA busy / done overlay states === */
+.order-cta .cta-main {
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.order-cta[data-state="busy"] .cta-main,
+.order-cta[data-state="done"] .cta-main {
+    opacity: 0;
+    transform: translateY(-2px);
+    pointer-events: none;
+}
+.order-cta .cta-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    opacity: 0;
+    transform: translateY(2px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+    z-index: 10;
+}
+.order-cta[data-state="busy"] .cta-overlay-busy,
+.order-cta[data-state="done"] .cta-overlay-done {
+    opacity: 1;
+    transform: translateY(0);
+}
 @keyframes cta-drawcheck {
-  0%   { stroke-dashoffset: 30; opacity: 0; transform: scale(.7); }
-  20%  { opacity: 1; }
-  100% { stroke-dashoffset: 0; opacity: 1; transform: scale(1); }
+    0% { stroke-dashoffset: 30; opacity: 0; transform: scale(0.7); }
+    20% { opacity: 1; }
+    100% { stroke-dashoffset: 0; opacity: 1; transform: scale(1); }
 }
 .cta-checkmark {
-  stroke-dasharray: 30;
-  stroke-dashoffset: 30;
-  animation: cta-drawcheck 0.5s cubic-bezier(.2,.7,.2,1) 0.1s forwards;
+    stroke-dasharray: 30;
+    stroke-dashoffset: 30;
+    animation: cta-drawcheck 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) 0.1s forwards;
 }
 
 @layer base {

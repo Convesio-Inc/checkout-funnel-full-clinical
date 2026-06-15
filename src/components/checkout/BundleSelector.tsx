@@ -1,17 +1,24 @@
-import { useState } from "react";
+/**
+ * BundleSelector
+ * -----------------------------------------------------------------------------
+ * One-time / subscribe toggle + the three bundle cards. The subscribe tab is
+ * intentionally disabled (visual only) — one-time purchase is the only active
+ * path in this iteration. Selecting a card calls onChange(bundle); the parent
+ * owns the selected bundle and drives the charge amount from it.
+ *
+ * Markers:
+ *   - root          data-section="bundle-selector"
+ *   - each card     data-section="bundle-card" + data-bundle-id
+ * -----------------------------------------------------------------------------
+ */
+
+import { Icon } from "@/components/icons";
+import { Bottle } from "@/components/checkout/Bottle";
+import { useViewers } from "@/hooks/useStorefrontUrgency";
 import { type Bundle, BUNDLES } from "./bundles";
 
 function formatDollars(minor: number) {
   return `$${(minor / 100).toFixed(2)}`;
-}
-
-function Bottle({ faded = false }: { faded?: boolean }) {
-  return (
-    <div className={`relative flex-shrink-0 ${faded ? "opacity-35" : ""}`}>
-      <div className="w-[9px] h-[6px] bg-[#3a6048] rounded-t-[2px] mx-auto" />
-      <div className="w-[22px] h-[30px] bg-gradient-to-b from-[#5a8868] to-[#3a6048] rounded-[3px]" />
-    </div>
-  );
 }
 
 interface BundleCardProps {
@@ -21,121 +28,84 @@ interface BundleCardProps {
 }
 
 function BundleCard({ bundle, selected, onSelect }: BundleCardProps) {
-  const totalBottles = bundle.bottleCount + bundle.freeBonusBottles;
-
   return (
-    <div
+    <button
+      type="button"
       data-section="bundle-card"
       data-bundle-id={bundle.id}
-      role="radio"
-      aria-checked={selected}
-      tabIndex={0}
+      aria-pressed={selected}
       onClick={onSelect}
-      onKeyDown={(e) => {
-        if (e.key === " " || e.key === "Enter") {
-          e.preventDefault();
-          onSelect();
-        }
-      }}
-      className={`relative cursor-pointer rounded-[10px] border px-4 py-3.5 transition-colors ${
-        selected
-          ? "border-[2.5px] border-[#1a3028] bg-[#f7fdf8]"
-          : "border-[1.5px] border-[#e0d9cc] bg-white hover:border-[#1a3028]/40"
-      }`}
+      className={[
+        "relative w-full text-left rounded-md transition px-5 py-5",
+        selected ? "ring-forest" : "gloss-card-flat hover:border-ink2",
+      ].join(" ")}
     >
       {bundle.isMostChosen && (
-        <div className="absolute -top-px left-3.5 bg-[#1a3028] text-white text-[9px] font-bold px-2 py-[3px] rounded-b-[4px] tracking-[0.08em]">
-          MOST CHOSEN · {bundle.mostChosenPercent}%
+        <div className="absolute -top-2.5 left-5 bg-forest text-bone text-[10.5px] uppercase tracking-[0.18em] font-semibold px-2.5 py-1 rounded-[3px]">
+          Most chosen · {bundle.mostChosenPercent}%
         </div>
       )}
+      <div className="flex items-start gap-4">
+        <div
+          className={[
+            "mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0",
+            selected ? "bg-forest text-bone" : "text-transparent border border-ink3/40",
+          ].join(" ")}
+        >
+          <Icon.Check className="w-3 h-3" />
+        </div>
 
-      <div
-        className={`flex items-start justify-between ${bundle.isMostChosen ? "mt-4" : ""}`}
-      >
-        {/* Left: radio + label */}
-        <div className="flex items-start gap-2.5 flex-1">
-          <div
-            className={`mt-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-              selected ? "border-[#1a3028] bg-[#1a3028] text-white" : "border-[#ccc]"
-            }`}
-          >
-            {selected && (
-              <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-                <path
-                  d="M1 4l2.5 2.5L9 1"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            )}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-baseline gap-2">
+            <div className="font-semibold text-[17px] tracking-tight text-ink">
+              {bundle.bottleCount} Bottle{bundle.bottleCount > 1 ? "s" : ""}
+            </div>
+            <div className="text-ink3 text-[12.5px]">· {bundle.supplyLabel}</div>
           </div>
-          <div>
-            <div className="text-[13px] font-bold text-[#1a3028]">
-              {bundle.bottleCount} Bottle{bundle.bottleCount > 1 ? "s" : ""}{" "}
-              <span className="text-[#888] font-normal text-[12px]">
-                · {bundle.supplyLabel}
+          <div className="mt-1 text-[12px] text-ink2 flex items-center gap-3">
+            <span className="inline-flex items-center gap-1 text-forest">
+              <Icon.Truck className="w-3.5 h-3.5" /> <span className="font-medium">Free shipping</span>
+            </span>
+            {bundle.savingsMinor ? (
+              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-[3px] bg-amber text-white font-medium text-[11px]">
+                Save ${(bundle.savingsMinor / 100).toFixed(0)}
               </span>
-            </div>
-            <div className="flex items-center gap-2 mt-1">
-              <span className="text-[10px] text-[#3a6a4a] font-medium">
-                ✓ Free shipping
-              </span>
-              {bundle.savingsMinor && (
-                <span className="text-[10px] font-bold text-[#2a7a4a] bg-[#e8f5ee] px-[6px] py-[2px] rounded-[4px]">
-                  Save ${(bundle.savingsMinor / 100).toFixed(0)}
-                </span>
-              )}
-            </div>
+            ) : null}
           </div>
         </div>
 
-        {/* Right: price */}
-        <div className="text-right flex-shrink-0 ml-2">
-          <div className="text-[20px] font-extrabold text-[#1a3028] leading-none">
+        <div className="text-right shrink-0">
+          <div className="num text-[24px] font-semibold tracking-tight leading-none text-ink">
             ${bundle.pricePerBottle.toFixed(2)}
           </div>
-          <div className="text-[10px] text-[#999] uppercase tracking-[0.06em] mt-0.5">
-            per bottle
-          </div>
-          {bundle.savingsMinor ? (
-            <>
-              <div className="text-[11px] text-[#bbb] line-through mt-0.5">
+          <div className="text-[10.5px] uppercase tracking-[0.16em] text-ink3 mt-1">per bottle</div>
+          <div className="mt-2 text-[12px] text-ink2">
+            {bundle.savingsMinor ? (
+              <span className="line-through text-ink3 mr-1">
                 {formatDollars(bundle.originalAmountMinor)}
-              </div>
-              <div className="text-[12px] font-semibold text-[#1a3028]">
-                {formatDollars(bundle.totalAmountMinor)}
-              </div>
-            </>
-          ) : (
-            <div className="text-[12px] font-semibold text-[#1a3028] mt-0.5">
-              {formatDollars(bundle.totalAmountMinor)}
-            </div>
-          )}
+              </span>
+            ) : null}
+            <span className="num font-medium">{formatDollars(bundle.totalAmountMinor)}</span>
+          </div>
         </div>
       </div>
 
-      {/* Bottle illustrations */}
-      <div className="flex items-end gap-[3px] mt-3 pt-3 border-t border-[#f0ece4]">
+      <div className="mt-4 flex items-end gap-1.5 pl-9">
         {Array.from({ length: bundle.bottleCount }).map((_, i) => (
-          <Bottle key={`main-${i}`} />
+          <Bottle key={`main-${i}`} small />
         ))}
         {bundle.freeBonusBottles > 0 && (
           <>
-            {Array.from({ length: bundle.freeBonusBottles }).map((_, i) => (
-              <Bottle key={`free-${i}`} faded />
-            ))}
-            <span className="text-[10px] text-[#888] ml-1.5 self-center">
+            <span className="num text-[11px] text-forest font-semibold ml-1 mb-1">
               + {bundle.freeBonusBottles} FREE
             </span>
+            {Array.from({ length: bundle.freeBonusBottles }).map((_, i) => (
+              <Bottle key={`free-${i}`} small ghost />
+            ))}
           </>
         )}
-        <span className="text-[10px] text-[#bbb] ml-auto self-center">
-          {totalBottles} bottle{totalBottles > 1 ? "s" : ""} total
-        </span>
       </div>
-    </div>
+    </button>
   );
 }
 
@@ -145,20 +115,24 @@ interface BundleSelectorProps {
 }
 
 export function BundleSelector({ value, onChange }: BundleSelectorProps) {
-  const [tab, setTab] = useState<"one-time" | "subscribe">("one-time");
+  const viewers = useViewers();
 
   return (
-    <div data-section="bundle-selector" className="mb-3">
-      {/* One-time / subscribe toggle */}
-      <div className="flex bg-[#e8e0d4] rounded-[8px] p-1 mb-2.5">
+    <div data-section="bundle-selector" className="space-y-3">
+      {/* Section header */}
+      <div className="flex items-baseline justify-between">
+        <h2 className="font-semibold text-[15px] tracking-tight text-ink">Choose your bundle</h2>
+        <div className="text-[11.5px] text-ink3 inline-flex items-center gap-1.5">
+          <span className="livedot inline-block w-1.5 h-1.5 rounded-full bg-amber" />
+          <span className="num">{viewers}</span> shoppers picking now
+        </div>
+      </div>
+
+      {/* One-time / subscribe toggle (subscribe disabled — visual only) */}
+      <div className="rounded-md p-1 flex text-[13px] bg-bone2 border border-line">
         <button
           type="button"
-          onClick={() => setTab("one-time")}
-          className={`flex-1 text-center py-2 rounded-[6px] text-[12px] font-semibold transition-colors ${
-            tab === "one-time"
-              ? "bg-[#1a3028] text-white"
-              : "text-[#666] hover:text-[#333]"
-          }`}
+          className="flex-1 px-4 py-2.5 rounded-[5px] transition flex items-center justify-center gap-2 bg-forest text-bone font-medium"
         >
           One-time purchase
         </button>
@@ -166,32 +140,20 @@ export function BundleSelector({ value, onChange }: BundleSelectorProps) {
         <button
           type="button"
           disabled
-          className="flex-1 text-center py-2 rounded-[6px] text-[12px] font-semibold transition-colors flex items-center justify-center gap-1.5 opacity-50 cursor-not-allowed text-[#666]"
+          aria-disabled="true"
+          title="Coming soon"
+          className="flex-1 px-4 py-2.5 rounded-[5px] transition flex items-center justify-center gap-2 text-ink3 opacity-60 cursor-not-allowed"
         >
-          Subscribe &amp; save
-          <span className="bg-[#c8620a] text-white text-[9px] font-bold px-1.5 py-[1px] rounded-[3px]">
-            -20%
+          <Icon.Leaf className="w-3.5 h-3.5" />
+          <span>Subscribe &amp; save 20%</span>
+          <span className="num text-[10.5px] px-1.5 py-0.5 bg-amber-soft text-amber2 rounded-sm">
+            −20%
           </span>
         </button>
       </div>
 
-      {/* Shoppers row */}
-      <div className="flex items-center justify-between mb-2.5">
-        <span className="text-[12px] font-bold text-[#1a3028]">
-          Choose your bundle
-        </span>
-        <span className="flex items-center gap-1.5 text-[11px] text-[#666]">
-          <span className="w-[7px] h-[7px] rounded-full bg-[#c8620a] animate-pulse inline-block" />
-          18 shoppers picking now
-        </span>
-      </div>
-
       {/* Bundle cards */}
-      <div
-        role="radiogroup"
-        aria-label="Select bundle"
-        className="flex flex-col gap-2"
-      >
+      <div className="space-y-3 mt-2">
         {BUNDLES.map((bundle) => (
           <BundleCard
             key={bundle.id}

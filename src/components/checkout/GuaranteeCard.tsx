@@ -1,28 +1,39 @@
+/**
+ * GuaranteeCard
+ * -----------------------------------------------------------------------------
+ * The empty-bottle promise: gold guarantee Seal beside a serif headline, body
+ * copy, and two reassurance bullets. All copy lives inline.
+ *
+ * Marker: data-section="guarantee"
+ * -----------------------------------------------------------------------------
+ */
+
+import { Icon } from "@/components/icons";
+import { Seal } from "@/components/checkout/Seal";
+
 export function GuaranteeCard() {
   return (
-    <div
-      data-section="guarantee"
-      className="bg-white rounded-[10px] p-4 mb-3 flex gap-3.5 items-start"
-    >
-      <div className="w-[56px] h-[56px] rounded-full bg-[#c8620a] text-white flex items-center justify-center text-[7.5px] font-bold text-center leading-[1.3] p-1.5 flex-shrink-0">
-        30 DAY<br />MONEY<br />BACK
-      </div>
-      <div>
-        <p className="text-[9px] text-[#999] uppercase tracking-[0.1em] mb-1">
-          The Empty-Bottle Promise
+    <div data-section="guarantee" className="gloss-card rounded-md p-5 flex gap-5 items-start">
+      <Seal />
+      <div className="flex-1">
+        <div className="text-[10.5px] uppercase tracking-[0.18em] text-ink3">
+          The empty-bottle promise
+        </div>
+        <h3 className="serif text-[24px] mt-1 leading-[1.1] text-ink">
+          30-day money-back guarantee — <em className="text-forest">even if the bottle is empty.</em>
+        </h3>
+        <p className="text-[13.5px] text-ink2 mt-2 leading-relaxed">
+          Take it daily for the full thirty days. If you don't feel sharper, calmer, more even —
+          ship the bottles back (full, half, or empty) and we'll refund every dollar. No restocking
+          fee, no friction, no questions about whether you "really tried it."
         </p>
-        <h2 className="text-[15px] font-bold italic text-[#1a3028] leading-[1.3] mb-2">
-          30-day money-back guarantee — even if the bottle is empty.
-        </h2>
-        <p className="text-[12px] text-[#666] leading-[1.6]">
-          Take it daily for the full thirty days. If you don't feel sharper,
-          calmer, more even — ship the bottles back (full, half, or empty)
-          and we'll refund every dollar. No restocking fee, no friction, no
-          questions.
-        </p>
-        <div className="flex flex-wrap gap-4 mt-2 text-[11px] text-[#3a6a4a] font-medium">
-          <span>✓ Refunds processed in 3 business days</span>
-          <span>✓ Keep any free gifts</span>
+        <div className="rule mt-3 pt-3 text-[12px] text-ink3 flex flex-wrap items-center gap-5">
+          <span className="inline-flex items-center gap-1.5">
+            <Icon.Check className="w-3.5 h-3.5 text-forest" /> Refunds processed in 3 business days
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <Icon.Check className="w-3.5 h-3.5 text-forest" /> Keep any free gifts
+          </span>
         </div>
       </div>
     </div>

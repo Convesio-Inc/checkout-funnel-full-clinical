@@ -17,11 +17,12 @@ import { ProductHeroCard } from "@/components/checkout/ProductHeroCard";
 import { GuaranteeCard } from "@/components/checkout/GuaranteeCard";
 import { ReviewsSection } from "@/components/checkout/ReviewsSection";
 import { IngredientsPanel } from "@/components/checkout/IngredientsPanel";
+import { SectionHead } from "@/components/checkout/form-atoms";
+import { Icon } from "@/components/icons";
 import { useCheckoutPayment } from "@/hooks/useCheckoutPayment";
-import { LockIcon } from "lucide-react";
 
 const PRODUCT_SKU = "1234567890";
-const PRODUCT_NAME = "Vitamin Essentials Pack";
+const PRODUCT_NAME = "Daily Greens Complex";
 const CURRENCY = "USD";
 
 const INITIAL_CUSTOMER: CustomerInfoValue = {
@@ -94,83 +95,54 @@ export function CheckoutPage() {
   const isProcessing = status === "processing";
 
   return (
-    <main data-page="checkout" className="bg-[#f5f0e8] pb-12">
-      <div className="mx-auto w-full max-w-[1100px] px-4 sm:px-6 py-6">
-        <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1.65fr_1fr] lg:items-start">
+    <main data-page="checkout">
+      <div className="max-w-[1180px] mx-auto px-5 py-8">
+        <div className="grid lg:grid-cols-[1.05fr_1fr] gap-8 items-start">
 
-          {/* LEFT: social proof column */}
-          <div data-region="form-stack">
+          {/* LEFT: social-proof column */}
+          <section data-region="form-stack" className="space-y-5">
             <ProductHeroCard />
             <BundleSelector value={selectedBundle} onChange={setSelectedBundle} />
             <GuaranteeCard />
             <ReviewsSection />
             <IngredientsPanel />
-          </div>
+          </section>
 
-          {/* RIGHT: sticky form card */}
-          <div data-region="summary" className="lg:sticky lg:top-6">
-            <div className="bg-white rounded-[10px] overflow-hidden shadow-sm">
-              {/* Form card header */}
-              <div className="bg-[#1a3028] text-white px-4 py-3 flex items-center justify-between">
-                <div>
-                  <div className="text-[11px] font-bold tracking-[0.1em] flex items-center gap-1.5">
-                    <LockIcon className="w-3 h-3" />
-                    SAFE &amp; SECURE ORDER FORM
-                  </div>
-                  <div className="text-[9px] text-[#7ab89a] tracking-[0.06em] mt-0.5">
-                    256-BIT SECURE ENCRYPTION
+          {/* RIGHT: sticky form column */}
+          <aside data-region="summary" className="lg:sticky lg:top-[88px]">
+            <div className="rounded-lg">
+              {/* Security header */}
+              <div className="flex items-center justify-between gap-3 gloss-forest text-bone px-4 py-3 rounded-md">
+                <div className="flex items-center gap-2.5">
+                  <Icon.Shield className="w-5 h-5" />
+                  <div className="leading-tight">
+                    <div className="text-[12.5px] font-semibold tracking-[0.06em] uppercase">
+                      Safe &amp; Secure Order Form
+                    </div>
+                    <div className="text-[10.5px] uppercase tracking-[0.18em] text-bone/70">
+                      256-bit secure encryption
+                    </div>
                   </div>
                 </div>
-                <span className="bg-white/15 text-[10px] px-2 py-1 rounded-[4px] tracking-[0.06em]">
-                  🔒 https
-                </span>
+                <div className="num text-[11px] text-bone/80 hidden sm:flex items-center gap-1 gloss-pill px-2 py-1 rounded-[3px]">
+                  <Icon.Lock className="w-3.5 h-3.5" /> https
+                </div>
               </div>
 
               {/* Form */}
-              <form onSubmit={handleSubmit} className="px-4 pb-4">
-                {/* Section 1: Contact */}
-                <section data-section="customer-info" className="pt-4">
-                  <h2 className="text-[13px] font-semibold text-[#1a3028] mb-3 flex items-center gap-2">
-                    <span className="w-5 h-5 rounded-full bg-[#1a3028] text-white text-[11px] font-bold flex items-center justify-center flex-shrink-0">
-                      1
-                    </span>
-                    Contact
-                    <span className="text-[10px] text-[#aaa] font-normal ml-auto italic">
-                      So we can send your tracking link.
-                    </span>
-                  </h2>
+              <form onSubmit={handleSubmit} className="gloss-card rounded-md p-5 mt-3 space-y-6">
+                <section data-section="customer-info">
+                  <SectionHead n="1" title="Contact" sub="So we can send your tracking link." />
                   <CustomerInfo value={customer} onChange={setCustomer} />
                 </section>
 
-                <div className="h-px bg-[#f0ece4] my-3" />
-
-                {/* Section 2: Shipping */}
                 <section data-section="shipping-info">
-                  <h2 className="text-[13px] font-semibold text-[#1a3028] mb-3 flex items-center gap-2">
-                    <span className="w-5 h-5 rounded-full bg-[#1a3028] text-white text-[11px] font-bold flex items-center justify-center flex-shrink-0">
-                      2
-                    </span>
-                    Shipping address
-                    <span className="text-[10px] text-[#aaa] font-normal ml-auto">
-                      U.S. only · free 2–4 day.
-                    </span>
-                  </h2>
+                  <SectionHead n="2" title="Shipping address" sub="U.S. only — free 2–4 day delivery." />
                   <ShippingInfo value={shipping} onChange={setShipping} />
                 </section>
 
-                <div className="h-px bg-[#f0ece4] my-3" />
-
-                {/* Section 3: Payment */}
                 <section data-section="payment-info">
-                  <h2 className="text-[13px] font-semibold text-[#1a3028] mb-3 flex items-center gap-2">
-                    <span className="w-5 h-5 rounded-full bg-[#1a3028] text-white text-[11px] font-bold flex items-center justify-center flex-shrink-0">
-                      3
-                    </span>
-                    Payment
-                    <span className="text-[10px] text-[#aaa] font-normal ml-auto">
-                      We never store your card.
-                    </span>
-                  </h2>
+                  <SectionHead n="3" title="Payment" sub="We never store your card." />
                   <PaymentInfo
                     customerEmail={customer.email || undefined}
                     onValidityChange={setIsPaymentValid}
@@ -185,7 +157,12 @@ export function CheckoutPage() {
                 />
               </form>
             </div>
-          </div>
+
+            <p className="text-[11px] text-ink3 text-center mt-3 max-w-[44ch] mx-auto leading-relaxed">
+              By placing this order you agree to our terms &amp; auto-renewal policy. Demo checkout —
+              no real charges are made.
+            </p>
+          </aside>
 
         </div>
       </div>
