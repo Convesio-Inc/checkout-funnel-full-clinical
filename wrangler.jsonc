@@ -1,0 +1,84 @@
+/**
+ * For more details on how to configure Wrangler, refer to:
+ * https://developers.cloudflare.com/workers/wrangler/configuration/
+ */
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "fulfillment-checkout",
+	"main": "worker/index.ts",
+	"compatibility_date": "2026-04-22",
+	"assets": {
+		"not_found_handling": "single-page-application",
+		"run_worker_first": [
+			"/auth/*",
+			"/config",
+			"/payments",
+			"/upsell-payment",
+			"/list-payments",
+			"/list-orders",
+			"/verify-token",
+			"/issue-token",
+			"/poll-payment",
+			"/search-orders",
+			"/users",
+			"/users/*"
+		]
+	},
+	"observability": {
+		"enabled": true
+	},
+	"upload_source_maps": true,
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
+	"secrets": {
+		"required": [
+			"CPAY_CLIENT_KEY",
+			"CPAY_API_KEY",
+			"CPAY_SECRET",
+			"CPAY_INTEGRATION",
+			"AUTH_SALT",
+			"GOOGLE_OAUTH_CLIENT_ID",
+			"GOOGLE_OAUTH_CLIENT_SECRET",
+			"SENDGRID_API_KEY",
+			"CARTROVER_API_USER",
+			"CARTROVER_API_KEY"
+		]
+	},
+	/**
+	 * Smart Placement
+	 * https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
+	 */
+	// "placement": {  "mode": "smart" }
+	/**
+	 * Bindings
+	 * Bindings allow your Worker to interact with resources on the Cloudflare Developer Platform, including
+	 * databases, object storage, AI inference, real-time communication and more.
+	 * https://developers.cloudflare.com/workers/runtime-apis/bindings/
+	 */
+	/**
+	 * Environment Variables
+	 * https://developers.cloudflare.com/workers/wrangler/configuration/#environment-variables
+	 * Note: Use secrets to store sensitive data.
+	 * https://developers.cloudflare.com/workers/configuration/secrets/
+	 */
+	"vars": {
+		"CPAY_ENVIRONMENT": "test"
+	},
+	/**
+	 * Service Bindings (communicate between multiple Workers)
+	 * https://developers.cloudflare.com/workers/wrangler/configuration/#service-bindings
+	 */
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "fulfillment-checkout",
+			"database_id": "6fc78813-9da9-4844-8b37-8bed1ada555c"
+		}
+	],
+	"triggers": {
+		"crons": [
+			"0 */2 * * *"
+		]
+	}
+}

@@ -1,0 +1,218 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/geist";
+
+@theme inline {
+    --font-heading: var(--font-sans);
+    --font-sans: "Geist Variable", Arial, Helvetica, sans-serif;
+    --color-brand: var(--brand);
+    --color-brand-foreground: var(--brand-foreground);
+    --color-brand-accent: var(--brand-accent);
+    --color-brand-accent-foreground: var(--brand-accent-foreground);
+    --color-sidebar-ring: var(--sidebar-ring);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar: var(--sidebar);
+    --color-ring: var(--ring);
+    --color-input: var(--input);
+    --color-border: var(--border);
+    --color-destructive: var(--destructive);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-accent: var(--accent);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-muted: var(--muted);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-secondary: var(--secondary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-primary: var(--primary);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-popover: var(--popover);
+    --color-card-foreground: var(--card-foreground);
+    --color-card: var(--card);
+    --color-foreground: var(--foreground);
+    --color-background: var(--background);
+    --color-header-background: var(--header-background);
+    --color-header-border: var(--header-border);
+    --color-pay-cta-from: var(--pay-cta-from);
+    --color-pay-cta-to: var(--pay-cta-to);
+    --color-pay-cta-hover-from: var(--pay-cta-hover-from);
+    --color-pay-cta-hover-to: var(--pay-cta-hover-to);
+    --color-pay-cta-foreground: var(--pay-cta-foreground);
+    --shadow-pay-cta: var(--pay-cta-shadow);
+    --shadow-pay-cta-hover: var(--pay-cta-shadow-hover);
+    --animate-pay-cta-pulse: pay-cta-pulse 2.4s ease-in-out infinite;
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.4);
+    --radius-2xl: calc(var(--radius) * 1.8);
+}
+
+/* === BRAND THEME ===
+ * The template ships as a single light theme inspired by the reference mock.
+ * Change these three tokens to re-skin the primary CTA and accent color
+ * without touching any component.
+ *
+ */
+:root {
+    --brand: oklch(0.2861 0.0429 162.59);
+    --brand-foreground: oklch(0.99 0 0);
+    --brand-accent: oklch(0.58 0.17 262);
+    --brand-accent-foreground: oklch(0.99 0 0);
+    --pay-cta-from: oklch(0.78 0.14 63);
+    --pay-cta-to: oklch(0.71 0.16 57);
+    --pay-cta-hover-from: oklch(0.75 0.14 63);
+    --pay-cta-hover-to: oklch(0.67 0.16 57);
+    --pay-cta-foreground: oklch(0.99 0 0);
+    --pay-cta-shadow: 0 12px 20px oklch(0.56 0.13 56 / 0.34);
+    --pay-cta-shadow-hover: 0 16px 26px oklch(0.52 0.13 56 / 0.4);
+
+    --background: oklch(0,0,1);
+    --header-background: oklch(0,0,1);
+    --header-border: oklch(0.9488 0.0054 95.1);
+    --foreground: oklch(0.18 0.015 260);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.18 0.015 260);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.18 0.015 260);
+    --primary: oklch(0.22 0.015 260);
+    --primary-foreground: oklch(0.98 0.005 260);
+    --secondary: oklch(0.96 0.01 260);
+    --secondary-foreground: oklch(0.22 0.015 260);
+    --muted: oklch(0.96 0.01 260);
+    --muted-foreground: oklch(0.5401 0.0076 106.65);
+    --accent: oklch(0.96 0.01 260);
+    --accent-foreground: oklch(0.22 0.015 260);
+    --destructive: oklch(0.58 0.22 27);
+    --border: oklch(0.9 0.01 260);
+    --input: oklch(0.92 0.01 260);
+    --ring: oklch(0.66 0.19 262);
+    --radius: 0.625rem;
+    --sidebar: oklch(0.99 0.005 260);
+    --sidebar-foreground: oklch(0.18 0.015 260);
+    --sidebar-primary: oklch(0.66 0.19 262);
+    --sidebar-primary-foreground: oklch(0.99 0 0);
+    --sidebar-accent: oklch(0.96 0.01 260);
+    --sidebar-accent-foreground: oklch(0.22 0.015 260);
+    --sidebar-border: oklch(0.9 0.01 260);
+    --sidebar-ring: oklch(0.66 0.19 262);
+}
+
+@keyframes pay-cta-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: var(--pay-cta-shadow);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 16px 28px oklch(0.54 0.13 56 / 0.43);
+  }
+}
+
+/* ── Pay CTA: breathing glow + sheen sweep ── */
+.pay-cta {
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.18) inset,
+    0 -2px 0 rgba(8,60,40,0.45) inset,
+    0 1px 2px rgba(8,60,40,0.2),
+    0 14px 28px -10px rgba(22,155,107,0.55);
+  transition: transform 0.14s cubic-bezier(.2,.7,.2,1), background-color 0.15s ease, box-shadow 0.14s ease;
+  animation: cta-breathe 3.6s ease-in-out infinite;
+}
+.pay-cta:hover:not(:disabled) { background-color: #1bb37b; }
+.pay-cta:active:not(:disabled) {
+  transform: translateY(1px) scale(.995);
+  background-color: #0f8559;
+  animation-play-state: paused;
+}
+.pay-cta:disabled { animation-play-state: paused; }
+
+.pay-cta::before {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0; left: -45%;
+  width: 38%;
+  transform: skewX(-22deg);
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.42) 50%, rgba(255,255,255,0) 100%);
+  pointer-events: none;
+  animation: cta-sheen 5s cubic-bezier(.2,.7,.2,1) infinite;
+}
+
+@keyframes cta-breathe {
+  0%, 100% { box-shadow: 0 1px 0 rgba(255,255,255,0.18) inset, 0 -2px 0 rgba(8,60,40,0.45) inset, 0 1px 2px rgba(8,60,40,0.2), 0 14px 28px -10px rgba(22,155,107,0.50); }
+  50%       { box-shadow: 0 1px 0 rgba(255,255,255,0.18) inset, 0 -2px 0 rgba(8,60,40,0.45) inset, 0 1px 2px rgba(8,60,40,0.2), 0 18px 36px -8px rgba(22,155,107,0.78); }
+}
+@keyframes cta-sheen {
+  0%   { left: -45%; }
+  35%  { left: 145%; }
+  100% { left: 145%; }
+}
+
+.pay-cta .cta-arrow-slot {
+  transition: transform 0.25s cubic-bezier(.2,.7,.2,1), background-color 0.15s ease;
+}
+.pay-cta:hover:not(:disabled) .cta-arrow-slot {
+  transform: translateX(3px);
+  background-color: rgba(255,255,255,0.18);
+}
+
+.pay-cta .cta-main {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.pay-cta[data-state="busy"] .cta-main,
+.pay-cta[data-state="done"] .cta-main {
+  opacity: 0;
+  transform: translateY(-2px);
+  pointer-events: none;
+}
+.pay-cta .cta-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  opacity: 0;
+  transform: translateY(2px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+}
+.pay-cta[data-state="busy"] .cta-overlay-busy,
+.pay-cta[data-state="done"] .cta-overlay-done {
+  opacity: 1;
+  transform: translateY(0);
+}
+.pay-cta[data-state="done"] {
+  background-color: #0d8a55;
+  animation: none;
+}
+
+@keyframes cta-drawcheck {
+  0%   { stroke-dashoffset: 30; opacity: 0; transform: scale(.7); }
+  20%  { opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 1; transform: scale(1); }
+}
+.cta-checkmark {
+  stroke-dasharray: 30;
+  stroke-dashoffset: 30;
+  animation: cta-drawcheck 0.5s cubic-bezier(.2,.7,.2,1) 0.1s forwards;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    }
+  body {
+    @apply bg-background text-foreground;
+    }
+  html {
+    @apply font-sans;
+    }
+}
