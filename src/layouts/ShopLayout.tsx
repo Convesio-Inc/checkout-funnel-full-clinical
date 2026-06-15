@@ -1,19 +1,43 @@
+import { useEffect, useState } from "react";
+
 import { SiteFooter, SiteHeader } from "@/components/site";
+import { AnnouncementBar } from "@/components/site/AnnouncementBar";
+import { UrgencyBanner } from "@/components/site/UrgencyBanner";
 import { LoggedInBar } from "@/components/site/LoggedInBar";
 import { useAuth } from "@/hooks/useAuth";
 import { Outlet } from "react-router";
 
-export function ShopLayout() {
-    const { status } = useAuth();
+const COUNTDOWN_SECONDS = 14 * 60 + 59;
 
-    return (
-        <main className="min-h-dvh flex flex-col">
-            {status === "authenticated" && <LoggedInBar />}
-            <SiteHeader />
-            <div className="flex-1">
-                <Outlet />
-            </div>
-            <SiteFooter />
-        </main>
+function pad(n: number) {
+  return String(n).padStart(2, "0");
+}
+
+export function ShopLayout() {
+  const { status } = useAuth();
+  const [remaining, setRemaining] = useState(COUNTDOWN_SECONDS);
+
+  useEffect(() => {
+    if (remaining <= 0) return;
+    const id = setInterval(
+      () => setRemaining((s) => Math.max(0, s - 1)),
+      1000,
     );
+    return () => clearInterval(id);
+  }, [remaining]);
+
+  const mmss = `${pad(Math.floor(remaining / 60))}:${pad(remaining % 60)}`;
+
+  return (
+    <div className="min-h-dvh flex flex-col">
+      <AnnouncementBar timer={mmss} />
+      <UrgencyBanner timer={mmss} />
+      {status === "authenticated" && <LoggedInBar />}
+      <SiteHeader />
+      <div className="flex-1">
+        <Outlet />
+      </div>
+      <SiteFooter />
+    </div>
+  );
 }
