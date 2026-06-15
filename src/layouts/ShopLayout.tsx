@@ -18,13 +18,9 @@ export function ShopLayout() {
   const [remaining, setRemaining] = useState(COUNTDOWN_SECONDS);
 
   useEffect(() => {
-    if (remaining <= 0) return;
-    const id = setInterval(
-      () => setRemaining((s) => Math.max(0, s - 1)),
-      1000,
-    );
+    const id = setInterval(() => setRemaining((s) => Math.max(0, s - 1)), 1000);
     return () => clearInterval(id);
-  }, [remaining]);
+  }, []);
 
   const mmss = `${pad(Math.floor(remaining / 60))}:${pad(remaining % 60)}`;
 
