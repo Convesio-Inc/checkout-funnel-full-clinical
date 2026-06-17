@@ -26,7 +26,7 @@ React 19 + TypeScript SPA (Vite) deployed as a **Cloudflare Worker** (`@cloudfla
 
 - **Routing**: React Router 7 in `src/App.tsx`, wrapped in `AuthProvider` and `QueryClientProvider` (TanStack Query). Storefront routes live under `ShopLayout`; dashboard routes live under `DashboardLayout` and are gated by `ProtectedRoute`.
 - **Data layer**: TanStack Query for dashboard data fetching/caching. Storefront state is local-only.
-- **Persistence**: Cloudflare D1 (`DB` binding, db name `fulfillment-checkout-v2`). Queries go through Drizzle ORM (`worker/db/`).
+- **Persistence**: Cloudflare D1 (`DB` binding, db name `fulfillment-checkout-v4`). Queries go through Drizzle ORM (`worker/db/`).
 - **Scheduled work**: A `0 */2 * * *` cron triggers `handleSyncPayments`, which reconciles pending payments, charges deferred upsells, syncs orders to CartRover, and emails customers.
 
 ### Frontend routes
@@ -34,7 +34,6 @@ React 19 + TypeScript SPA (Vite) deployed as a **Cloudflare Worker** (`@cloudfla
 | Path                            | Page           | Layout            | Auth                                             |
 | ------------------------------- | -------------- | ----------------- | ------------------------------------------------ |
 | `/`                             | `CheckoutPage` | `ShopLayout`      | public                                           |
-| `/product`                      | `ProductPage`  | `ShopLayout`      | public                                           |
 | `/thank-you`                    | `ThankYouPage` | `ShopLayout`      | public (`?token=` JWT or `?paymentId=` fallback) |
 | `/login`                        | `LoginPage`    | standalone        | public                                           |
 | `/orders`, `/orders/page/:page` | `OrderPage`    | `DashboardLayout` | `ProtectedRoute`                                 |
@@ -91,7 +90,6 @@ Sessions are **opaque hex tokens** (not JWTs) stored in the `user_sessions` D1 t
 | `src/layouts/ShopLayout.tsx` / `src/layouts/DashboardLayout.tsx`                                                                                                       | Two top-level layouts — storefront vs admin.                                                                                                                                                                                                                                                              |
 | `src/pages/CheckoutPage.tsx`                                                                                                                                           | Owns all checkout form state; wires `useConvesioPayCheckout` + `useCheckoutPayment`; drives `PaymentStatusDialog`.                                                                                                                                                                                        |
 | `src/pages/ThankYouPage.tsx`                                                                                                                                           | Post-checkout landing driven by the `?token=` JWT; renders verifying / pending / succeeded / failed; mounts the upsell banner + modal when configured.                                                                                                                                                    |
-| `src/pages/ProductPage.tsx`                                                                                                                                            | Optional product page mounted at `/product`.                                                                                                                                                                                                                                                              |
 | `src/pages/LoginPage.tsx`                                                                                                                                              | Email/password + Google OAuth entry point.                                                                                                                                                                                                                                                                |
 | `src/pages/OrderPage.tsx`                                                                                                                                              | Admin orders listing + drawer.                                                                                                                                                                                                                                                                            |
 | `src/pages/UsersPage.tsx`                                                                                                                                              | Staff CRUD UI.                                                                                                                                                                                                                                                                                            |
@@ -164,7 +162,7 @@ Plain var: `CPAY_ENVIRONMENT` — `"test"` (default) or `"live"`. Selects the up
 
 ### D1 database
 
-Binding `DB`, database name `fulfillment-checkout-v2` (id pinned in `wrangler.jsonc`). All queries go through Drizzle (`db(env)` in `worker/db/client.ts`). Schema in `worker/db/schema.ts`:
+Binding `DB`, database name `fulfillment-checkout-v4` (id pinned in `wrangler.jsonc`). All queries go through Drizzle (`db(env)` in `worker/db/client.ts`). Schema in `worker/db/schema.ts`:
 
 | Table           | Notes                                                                                                                                                                                                                             |
 | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -187,7 +185,6 @@ Three layers in increasing depth — only go deeper than you need:
    - Customer / shipping / payment form labels → the matching component in `src/components/checkout/`
    - Country list in shipping form → `COUNTRIES` constant in `src/components/checkout/ShippingInfo.tsx`
    - Order summary product, prices, CTA → `src/components/checkout/OrderSummaryCard.tsx`
-   - Product page content → `src/pages/ProductPage.tsx`
    - Thank-you page copy, upsell offer → `src/pages/ThankYouPage.tsx` (`UPSELL_PRODUCT = null` disables the banner)
 2. **Brand colors** → `/* === BRAND THEME === */` block in `src/index.css`.
 3. **Layout or behavior** → section components under `src/components/<family>/`; compose or reorder them in the matching page under `src/pages/`.
