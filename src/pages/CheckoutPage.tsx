@@ -13,11 +13,7 @@ import {
 } from "@/components/checkout/ShippingInfo";
 import { BundleSelector } from "@/components/checkout/BundleSelector";
 import { BUNDLES, type Bundle } from "@/components/checkout/bundles";
-import { ProductHeroCard } from "@/components/checkout/ProductHeroCard";
-import { GuaranteeCard } from "@/components/checkout/GuaranteeCard";
-import { ReviewsSection } from "@/components/checkout/ReviewsSection";
-import { IngredientsPanel } from "@/components/checkout/IngredientsPanel";
-import { SectionHead } from "@/components/checkout/form-atoms";
+import { Step } from "@/components/checkout/form-atoms";
 import { Icon } from "@/components/icons";
 import { useCheckoutPayment } from "@/hooks/useCheckoutPayment";
 
@@ -25,10 +21,7 @@ const PRODUCT_SKU = "1234567890";
 const PRODUCT_NAME = "Daily Greens Complex";
 const CURRENCY = "USD";
 
-const INITIAL_CUSTOMER: CustomerInfoValue = {
-  email: "",
-  phoneNumber: "",
-};
+const INITIAL_CUSTOMER: CustomerInfoValue = { email: "", phoneNumber: "" };
 
 const INITIAL_SHIPPING: ShippingInfoValue = {
   firstName: "",
@@ -40,6 +33,13 @@ const INITIAL_SHIPPING: ShippingInfoValue = {
   zip: "",
   country: "US",
 };
+
+const TRUST = [
+  { k: "TLS 1.3", v: "256-bit encrypted", icon: <Icon.Lock className="w-3.5 h-3.5" /> },
+  { k: "PCI DSS · L1", v: "Card data certified", icon: <Icon.Shield className="w-3.5 h-3.5" /> },
+  { k: "4.86 · 12.4k", v: "Verified reviews", icon: <Icon.Star className="w-3.5 h-3.5" /> },
+  { k: "Lab tested", v: "3rd-party, COA", icon: <Icon.Beaker className="w-3.5 h-3.5" /> },
+];
 
 export function CheckoutPage() {
   const [customer, setCustomer] = useState<CustomerInfoValue>(INITIAL_CUSTOMER);
@@ -75,10 +75,7 @@ export function CheckoutPage() {
       name: `${shipping.firstName} ${shipping.lastName}`.trim(),
       amount: selectedBundle.totalAmountMinor,
       currency: CURRENCY,
-      phone: {
-        number: customer.phoneNumber,
-        countryCode: "1",
-      },
+      phone: { number: customer.phoneNumber, countryCode: "1" },
       billingAddress: address,
       shippingAddress: address,
       lineItems: [
@@ -93,86 +90,103 @@ export function CheckoutPage() {
   };
 
   const isProcessing = status === "processing";
+  const totalFmt = `$${(selectedBundle.totalAmountMinor / 100).toFixed(2)}`;
 
   return (
-    <main data-page="checkout">
-      <div className="max-w-[1180px] mx-auto px-5 py-8">
-        <div className="grid lg:grid-cols-[1.05fr_1fr] gap-8 items-start">
+    <main data-page="checkout" className="min-h-screen">
+      <div className="max-w-[720px] mx-auto px-6 py-12">
+        <div className="flex items-baseline justify-between">
+          <h1 className="text-[32px] font-semibold tracking-[-0.02em] leading-none text-ink">
+            Almost there.
+          </h1>
+          <span className="text-[12px] text-ink3">
+            Need a hand?{" "}
+            <a className="text-ink underline underline-offset-4 hover:text-ink2" href="#">
+              care@meridian.co
+            </a>
+          </span>
+        </div>
+        <p className="text-[14px] text-ink2 mt-3 max-w-[58ch] leading-relaxed font-light">
+          One unhurried scoop. 32 organic plants, adaptogens &amp; enzymes. Third-party tested,
+          shipped from Portland in compostable packaging.
+        </p>
 
-          {/* LEFT: social-proof column */}
-          <section data-region="form-stack" className="space-y-5">
-            <ProductHeroCard />
-            <BundleSelector value={selectedBundle} onChange={setSelectedBundle} />
-            <GuaranteeCard />
-            <ReviewsSection />
-            <IngredientsPanel />
-          </section>
-
-          {/* RIGHT: sticky form column */}
-          <aside data-region="summary" className="lg:sticky lg:top-[88px]">
-            <div className="rounded-lg">
-              {/* Security header */}
-              <div className="flex items-center justify-between gap-3 gloss-forest text-bone px-4 py-3 rounded-md">
-                <div className="flex items-center gap-2.5">
-                  <Icon.Shield className="w-5 h-5" />
-                  <div className="leading-tight">
-                    <div className="text-[12.5px] font-semibold tracking-[0.06em] uppercase">
-                      Safe &amp; Secure Order Form
-                    </div>
-                    <div className="text-[10.5px] uppercase tracking-[0.18em] text-bone/70">
-                      256-bit secure encryption
-                    </div>
-                  </div>
-                </div>
-                <div className="num text-[11px] text-bone/80 hidden sm:flex items-center gap-1 gloss-pill px-2 py-1 rounded-[3px]">
-                  <Icon.Lock className="w-3.5 h-3.5" /> https
-                </div>
+        <form
+          onSubmit={handleSubmit}
+          className="mt-7 bg-paper rounded-[20px] border border-line shadow-[0_1px_0_rgba(10,11,13,0.02),0_20px_42px_-26px_rgba(10,11,13,0.18)] overflow-hidden"
+        >
+          <div className="px-6">
+            <Step
+              n="1"
+              title="Your supply"
+              summaryRight={
+                <span className="num text-[12px] text-ink">
+                  <span className="text-ink3 smallcaps mr-2">{selectedBundle.bottleCount}× · one-time</span>
+                  {totalFmt}
+                </span>
+              }
+            >
+              <BundleSelector value={selectedBundle} onChange={setSelectedBundle} />
+              <div className="mt-4 grid grid-cols-3 gap-x-4 gap-y-1 text-[11px] text-ink3">
+                <span className="inline-flex items-center gap-1.5"><Icon.Check className="w-3 h-3" /> Free shipping</span>
+                <span className="inline-flex items-center gap-1.5"><Icon.Check className="w-3 h-3" /> 90-day return</span>
+                <span className="inline-flex items-center gap-1.5"><Icon.Check className="w-3 h-3" /> Cancel anytime</span>
               </div>
+            </Step>
+          </div>
 
-              {/* Form */}
-              <form onSubmit={handleSubmit} className="gloss-card rounded-md p-5 mt-3 space-y-6">
-                <section data-section="customer-info">
-                  <SectionHead n="1" title="Contact" sub="So we can send your tracking link." />
-                  <CustomerInfo value={customer} onChange={setCustomer} />
-                </section>
+          <div className="px-6">
+            <Step n="2" title="Contact">
+              <CustomerInfo value={customer} onChange={setCustomer} />
+            </Step>
+          </div>
 
-                <section data-section="shipping-info">
-                  <SectionHead n="2" title="Shipping address" sub="U.S. only — free 2–4 day delivery." />
-                  <ShippingInfo value={shipping} onChange={setShipping} />
-                </section>
+          <div className="px-6">
+            <Step n="3" title="Ships to">
+              <ShippingInfo value={shipping} onChange={setShipping} />
+            </Step>
+          </div>
 
-                <section data-section="payment-info">
-                  <SectionHead n="3" title="Payment" sub="We never store your card." />
-                  <PaymentInfo
-                    customerEmail={customer.email || undefined}
-                    onValidityChange={setIsPaymentValid}
-                    onComponentReady={handleComponentReady}
-                  />
-                </section>
+          <div className="px-6">
+            <Step
+              n="4"
+              title="Payment"
+              summaryRight={
+                <span className="num text-[10.5px] text-ink3 tracking-[0.1em] hidden sm:inline">VISA · MC · AMEX</span>
+              }
+            >
+              <PaymentInfo
+                customerEmail={customer.email || undefined}
+                onValidityChange={setIsPaymentValid}
+                onComponentReady={handleComponentReady}
+              />
+            </Step>
+          </div>
 
-                <OrderSummaryCard
-                  selectedBundle={selectedBundle}
-                  payDisabled={!isPaymentValid}
-                  payLoading={isProcessing}
-                />
-              </form>
+          <div className="px-6">
+            <OrderSummaryCard
+              selectedBundle={selectedBundle}
+              payDisabled={!isPaymentValid}
+              payLoading={isProcessing}
+            />
+          </div>
+        </form>
+
+        {/* Trust strip */}
+        <div className="mt-7 grid grid-cols-2 md:grid-cols-4 gap-3 text-[11px]">
+          {TRUST.map((t) => (
+            <div key={t.k} className="bg-paper border border-line2 rounded-xl px-3 py-2.5 flex items-center gap-2.5">
+              <span className="text-ink2">{t.icon}</span>
+              <span className="leading-tight">
+                <span className="block text-ink font-medium">{t.k}</span>
+                <span className="block text-ink3 text-[10.5px]">{t.v}</span>
+              </span>
             </div>
-
-            <p className="text-[11px] text-ink3 text-center mt-3 max-w-[44ch] mx-auto leading-relaxed">
-              By placing this order you agree to our terms &amp; auto-renewal policy. Demo checkout —
-              no real charges are made.
-            </p>
-          </aside>
-
+          ))}
         </div>
       </div>
 
-      <PaymentStatusDialog
-        status={status}
-        error={error}
-        result={result}
-        onClose={reset}
-      />
+      <PaymentStatusDialog status={status} error={error} result={result} onClose={reset} />
     </main>
   );
 }
