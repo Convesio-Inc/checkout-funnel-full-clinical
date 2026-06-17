@@ -1,10 +1,10 @@
 /**
  * BundleSelector
  * -----------------------------------------------------------------------------
- * One-time / subscribe toggle + the three bundle cards. The subscribe tab is
- * intentionally disabled (visual only) — one-time purchase is the only active
- * path in this iteration. Selecting a card calls onChange(bundle); the parent
- * owns the selected bundle and drives the charge amount from it.
+ * AG1 supply picker: a One-time / Subscribe segmented toggle (Subscribe is
+ * disabled — cosmetic only) above three plan cards. One-time is the only
+ * functional path; selecting a card calls onChange(bundle) and the parent
+ * drives the charge amount from the selection.
  *
  * Markers:
  *   - root          data-section="bundle-selector"
@@ -12,22 +12,24 @@
  * -----------------------------------------------------------------------------
  */
 
-import { Icon } from "@/components/icons";
-import { Bottle } from "@/components/checkout/Bottle";
-import { useViewers } from "@/hooks/useStorefrontUrgency";
 import { type Bundle, BUNDLES } from "./bundles";
 
-function formatDollars(minor: number) {
-  return `$${(minor / 100).toFixed(2)}`;
-}
+const LIST_PER_BOTTLE = 49; // compare-at $/bottle for the strike price
 
-interface BundleCardProps {
+function PlanCard({
+  bundle,
+  selected,
+  onSelect,
+}: {
   bundle: Bundle;
   selected: boolean;
   onSelect: () => void;
-}
+}) {
+  const featured = Boolean(bundle.isMostChosen);
+  const list = LIST_PER_BOTTLE * bundle.bottleCount;
+  const total = bundle.totalAmountMinor / 100;
+  const save = bundle.savingsMinor ? bundle.savingsMinor / 100 : 0;
 
-function BundleCard({ bundle, selected, onSelect }: BundleCardProps) {
   return (
     <button
       type="button"
@@ -35,127 +37,78 @@ function BundleCard({ bundle, selected, onSelect }: BundleCardProps) {
       data-bundle-id={bundle.id}
       aria-pressed={selected}
       onClick={onSelect}
-      className={[
-        "relative w-full text-left rounded-md transition px-5 py-5",
-        selected ? "ring-forest" : "gloss-card-flat hover:border-ink2",
-      ].join(" ")}
+      className={"plan relative text-left p-4 pt-5 " + (selected ? "on" : "")}
     >
-      {bundle.isMostChosen && (
-        <div className="absolute -top-2.5 left-5 bg-forest text-bone text-[10.5px] uppercase tracking-[0.18em] font-semibold px-2.5 py-1 rounded-[3px]">
-          Most chosen · {bundle.mostChosenPercent}%
-        </div>
+      {featured && (
+        <span className="save-chip absolute -top-2.5 left-1/2 -translate-x-1/2 whitespace-nowrap">
+          Best value
+        </span>
       )}
-      <div className="flex items-start gap-4">
-        <div
-          className={[
-            "mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0",
-            selected ? "bg-forest text-bone" : "text-transparent border border-ink3/40",
-          ].join(" ")}
-        >
-          <Icon.Check className="w-3 h-3" />
-        </div>
-
-        <div className="flex-1 min-w-0">
-          <div className="flex items-baseline gap-2">
-            <div className="font-semibold text-[17px] tracking-tight text-ink">
-              {bundle.bottleCount} Bottle{bundle.bottleCount > 1 ? "s" : ""}
-            </div>
-            <div className="text-ink3 text-[12.5px]">· {bundle.supplyLabel}</div>
-          </div>
-          <div className="mt-1 text-[12px] text-ink2 flex items-center gap-3">
-            <span className="inline-flex items-center gap-1 text-forest">
-              <Icon.Truck className="w-3.5 h-3.5" /> <span className="font-medium">Free shipping</span>
-            </span>
-            {bundle.savingsMinor ? (
-              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-[3px] bg-amber text-white font-medium text-[11px]">
-                Save ${(bundle.savingsMinor / 100).toFixed(0)}
-              </span>
-            ) : null}
-          </div>
-        </div>
-
-        <div className="text-right shrink-0">
-          <div className="num text-[24px] font-semibold tracking-tight leading-none text-ink">
-            ${bundle.pricePerBottle.toFixed(2)}
-          </div>
-          <div className="text-[10.5px] uppercase tracking-[0.16em] text-ink3 mt-1">per bottle</div>
-          <div className="mt-2 text-[12px] text-ink2">
-            {bundle.savingsMinor ? (
-              <span className="line-through text-ink3 mr-1">
-                {formatDollars(bundle.originalAmountMinor)}
-              </span>
-            ) : null}
-            <span className="num font-medium">{formatDollars(bundle.totalAmountMinor)}</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-4 flex items-end gap-1.5 pl-9">
-        {Array.from({ length: bundle.bottleCount }).map((_, i) => (
-          <Bottle key={`main-${i}`} small />
-        ))}
-        {bundle.freeBonusBottles > 0 && (
-          <>
-            <span className="num text-[11px] text-forest font-semibold ml-1 mb-1">
-              + {bundle.freeBonusBottles} FREE
-            </span>
-            {Array.from({ length: bundle.freeBonusBottles }).map((_, i) => (
-              <Bottle key={`free-${i}`} small ghost />
-            ))}
-          </>
+      <div className="flex items-start justify-between">
+        <span className="ringdot mt-0.5" />
+        {save > 0 ? (
+          <span className={"num text-[10.5px] font-semibold whitespace-nowrap " + (selected ? "text-lime" : "text-rust")}>
+            Save ${save.toFixed(0)}
+          </span>
+        ) : (
+          <span className="text-[10.5px]">&nbsp;</span>
         )}
+      </div>
+      <div className="mt-3">
+        <div className={"text-[13px] font-medium whitespace-nowrap " + (selected ? "text-sand/80" : "text-ink2")}>
+          {bundle.bottleCount} bottle{bundle.bottleCount > 1 ? "s" : ""}
+        </div>
+        <div className="mt-1 flex items-baseline gap-1 whitespace-nowrap">
+          <span className={"num text-[24px] leading-none font-medium tracking-tight " + (selected ? "text-sand" : "text-ink")}>
+            ${bundle.pricePerBottle.toFixed(2)}
+          </span>
+          <span className={"text-[10.5px] " + (selected ? "text-sand/60" : "text-ink3")}>/bottle</span>
+        </div>
+        <div className="mt-1.5 text-[11px] num whitespace-nowrap">
+          <span className={"strike mr-1 " + (selected ? "!text-sand/40" : "")}>${list.toFixed(2)}</span>
+          <span className={selected ? "text-sand/80" : "text-ink2"}>${total.toFixed(2)}</span>
+        </div>
+        <div className={"mt-1.5 text-[11px] whitespace-nowrap " + (selected ? "text-sand/60" : "text-ink3")}>
+          {bundle.supplyLabel}
+        </div>
       </div>
     </button>
   );
 }
 
-interface BundleSelectorProps {
+export interface BundleSelectorProps {
   value: Bundle;
   onChange: (bundle: Bundle) => void;
 }
 
 export function BundleSelector({ value, onChange }: BundleSelectorProps) {
-  const viewers = useViewers();
+  const ordered = [...BUNDLES].sort((a, b) => a.bottleCount - b.bottleCount);
 
   return (
-    <div data-section="bundle-selector" className="space-y-3">
-      {/* Section header */}
-      <div className="flex items-baseline justify-between">
-        <h2 className="font-semibold text-[15px] tracking-tight text-ink">Choose your bundle</h2>
-        <div className="text-[11.5px] text-ink3 inline-flex items-center gap-1.5">
-          <span className="livedot inline-block w-1.5 h-1.5 rounded-full bg-amber" />
-          <span className="num">{viewers}</span> shoppers picking now
+    <div data-section="bundle-selector">
+      {/* One-time / Subscribe toggle (Subscribe disabled — cosmetic only) */}
+      <div className="mb-4">
+        <div className="seg-track flex items-center w-full text-[13px] font-medium">
+          <button type="button" className="flex-1 py-2.5 seg-on">
+            One-time
+          </button>
+          <button
+            type="button"
+            disabled
+            aria-disabled="true"
+            title="Coming soon"
+            className="flex-1 py-2.5 flex items-center justify-center gap-2 text-ink4 cursor-not-allowed"
+          >
+            Subscribe
+            <span className="num text-[10.5px] font-semibold text-rust">−20%</span>
+          </button>
         </div>
       </div>
 
-      {/* One-time / subscribe toggle (subscribe disabled — visual only) */}
-      <div className="rounded-md p-1 flex text-[13px] bg-bone2 border border-line">
-        <button
-          type="button"
-          className="flex-1 px-4 py-2.5 rounded-[5px] transition flex items-center justify-center gap-2 bg-forest text-bone font-medium"
-        >
-          One-time purchase
-        </button>
-        {/* TODO: subscription flow */}
-        <button
-          type="button"
-          disabled
-          aria-disabled="true"
-          title="Coming soon"
-          className="flex-1 px-4 py-2.5 rounded-[5px] transition flex items-center justify-center gap-2 text-ink3 opacity-60 cursor-not-allowed"
-        >
-          <Icon.Leaf className="w-3.5 h-3.5" />
-          <span>Subscribe &amp; save 20%</span>
-          <span className="num text-[10.5px] px-1.5 py-0.5 bg-amber-soft text-amber2 rounded-sm">
-            −20%
-          </span>
-        </button>
-      </div>
-
-      {/* Bundle cards */}
-      <div className="space-y-3 mt-2">
-        {BUNDLES.map((bundle) => (
-          <BundleCard
+      {/* Plan cards */}
+      <div className="grid grid-cols-3 gap-2.5">
+        {ordered.map((bundle) => (
+          <PlanCard
             key={bundle.id}
             bundle={bundle}
             selected={value.id === bundle.id}
