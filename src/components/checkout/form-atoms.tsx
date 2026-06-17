@@ -16,7 +16,7 @@ export const inputCls = "ck-input";
 export interface FieldProps {
   label: string;
   children: React.ReactElement<{ style?: React.CSSProperties }>;
-  /** Tailwind grid-span class. Defaults to full width within a 2-col grid. */
+  /** Tailwind grid-span class. Defaults to full width in any grid. */
   span?: string;
   optional?: boolean;
   hint?: string;
@@ -29,7 +29,7 @@ export interface FieldProps {
 export function Field({
   label,
   children,
-  span = "col-span-2",
+  span = "col-span-full",
   optional = false,
   hint,
   icon,

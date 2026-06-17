@@ -30,7 +30,7 @@ export function CustomerInfo({ value, onChange }: CustomerInfoCardProps) {
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Field label="Email" icon={<Icon.Mail className="w-4 h-4" />} dataField="email">
+        <Field label="Email" span="col-span-1" icon={<Icon.Mail className="w-4 h-4" />} dataField="email">
           <input
             className={inputCls}
             type="email"
@@ -41,7 +41,7 @@ export function CustomerInfo({ value, onChange }: CustomerInfoCardProps) {
             onChange={set("email")}
           />
         </Field>
-        <Field label="Phone" optional dataField="phone-number">
+        <Field label="Phone" span="col-span-1" optional dataField="phone-number">
           <input
             className={inputCls}
             type="tel"
