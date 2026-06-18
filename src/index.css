@@ -10,43 +10,46 @@
     --font-mono: "Geist Mono", ui-monospace, monospace;
     --font-serif: "Instrument Serif", ui-serif, Georgia, serif;
 
-    /* === MERIDIAN PALETTE (from reference) === */
-    --color-bone: #faf7f0;
-    --color-bone2: #f3efe4;
+    /* === CLINICAL PALETTE (Checkout v5) ===
+     * Clinical white/cobalt/ink/mint. Legacy warm token *names* (sand, bone,
+     * forest, amber, lime, rust, gold, paper2) are intentionally kept and
+     * aliased to clinical values so existing component classes keep working.
+     */
     --color-paper: #ffffff;
-    --color-ink: #0f1310;
-    --color-ink2: #34372f;
-    --color-ink3: #6b6f64;
-    --color-line: #e4dfce;
-    --color-line2: #efe9d6;
-    --color-forest: #1d3a2d;
-    --color-forest2: #2a5141;
-    --color-forest3: #3c6a55;
-    --color-moss: #4a6b53;
-    --color-sage: #cfd9c8;
-    --color-amber: #e07b1f;
-    --color-amber2: #c25f15;
-    --color-amber3: #f6a755;
-    --color-amber-soft: #fbe8c8;
-    --color-rust: #9c3a1a;
-    --color-gold: #caa15a;
-    --color-gold2: #8d6a2a;
-
-    /* === AG1 WARM PALETTE (Checkout v4 reference) === */
-    --color-sand: #eddfc4;
-    --color-sand2: #e4d3ad;
-    --color-paper: #fbf3dd;
-    --color-paper2: #f7eece;
+    --color-paper2: #f6f7f9;
+    --color-well: #f6f7f9;
+    --color-well2: #eef0f4;
     --color-ink: #0a0b0d;
-    --color-ink2: #2a2b25;
-    --color-ink3: #65665d;
-    --color-ink4: #a09d8c;
-    --color-line: #d4c69f;
-    --color-line2: #e3d5b1;
-    --color-lime: #cde04a;
-    --color-lime2: #aec33a;
-    --color-lime3: #e6f08b;
-    --color-rust: #b04923;
+    --color-ink2: #2f3338;
+    --color-ink3: #6a6f78;
+    --color-ink4: #a3a8b2;
+    --color-line: #e6e8ec;
+    --color-line2: #eef0f4;
+    --color-cobalt: #1c4dff;
+    --color-cobalt2: #0c2fcb;
+    --color-cobalt3: #5a82ff;
+    --color-mint: #00a36b;
+
+    /* legacy warm names → clinical aliases */
+    --color-bone: #ffffff;
+    --color-bone2: #f6f7f9;
+    --color-sand: #ffffff;
+    --color-sand2: #f6f7f9;
+    --color-sage: #cdd6e6;
+    --color-lime: #1c4dff;
+    --color-lime2: #0c2fcb;
+    --color-lime3: #eaf0ff;
+    --color-forest: #1c4dff;
+    --color-forest2: #0c2fcb;
+    --color-forest3: #5a82ff;
+    --color-moss: #00a36b;
+    --color-amber: #1c4dff;
+    --color-amber2: #0c2fcb;
+    --color-amber3: #5a82ff;
+    --color-amber-soft: #eaf0ff;
+    --color-rust: #c4392a;
+    --color-gold: #6a6f78;
+    --color-gold2: #2f3338;
 
     /* === shadcn / app shell tokens === */
     --color-brand: var(--brand);
@@ -94,11 +97,11 @@
  * (dashboard / login) keeps the neutral shadcn tokens below.
  */
 :root {
-    --brand: #1d3a2d;
-    --brand-foreground: #faf7f0;
-    --brand-accent: #3c6a55;
+    --brand: #0a0b0d;
+    --brand-foreground: #ffffff;
+    --brand-accent: #1c4dff;
     --brand-accent-foreground: #ffffff;
-    --brand-muted: #cfd9c8;
+    --brand-muted: #eef0f4;
 
     --background: oklch(1 0 0);
     --header-background: oklch(1 0 0);
@@ -145,19 +148,13 @@
  */
 .gloss-card {
     background: #ffffff;
-    border: 1px solid #e4dfce;
-    box-shadow: 0 1px 0 rgba(22, 24, 20, 0.02), 0 18px 36px -28px rgba(22, 24, 20, 0.18);
+    border: 1px solid #e6e8ec;
+    box-shadow: 0 1px 0 rgba(10, 11, 13, 0.02), 0 18px 36px -24px rgba(10, 11, 13, 0.12);
 }
-.gloss-card-flat {
-    background: #ffffff;
-    border: 1px solid #e4dfce;
-}
+.gloss-card-flat { background: #ffffff; border: 1px solid #e6e8ec; }
 
-/* Forest — solid, lightest top-edge highlight only */
-.gloss-forest {
-    background: #1d3a2d;
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08) inset;
-}
+/* Cobalt — solid, lightest top-edge highlight only */
+.gloss-forest { background: #1c4dff; box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08) inset; }
 
 /* Amber CTA — the one button that keeps the gloss */
 .gloss-cta {
@@ -219,54 +216,46 @@
 /* Inputs — flat white, thin border, simple focus ring */
 .gloss-input {
     background: #ffffff;
-    border: 1px solid #d6d0bd;
+    border: 1px solid #e6e8ec;
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 .gloss-input:focus {
-    border-color: #1d3a2d;
-    box-shadow: 0 0 0 3px rgba(29, 58, 45, 0.12);
+    border-color: #1c4dff;
+    box-shadow: 0 0 0 4px rgba(28, 77, 255, 0.12);
     outline: none;
 }
 
 /* Selected bundle: double-line forest ring */
-.ring-forest {
-    background: #ffffff;
-    border: 1px solid #1d3a2d;
-    box-shadow: 0 0 0 1px #1d3a2d inset;
-}
+.ring-forest { background: #ffffff; border: 1px solid #1c4dff; box-shadow: 0 0 0 1px #1c4dff inset; }
 
 /* Product placeholder backdrop — quiet ivory wash */
-.stripes {
-    background:
-        radial-gradient(70% 55% at 50% 38%, #ffffff 0%, rgba(255, 255, 255, 0) 75%),
-        #f0ead8;
-}
+.stripes { background: radial-gradient(70% 55% at 50% 38%, #ffffff 0%, rgba(255,255,255,0) 75%), #f6f7f9; }
 
-.rule { border-top: 1px solid #e3d5b1; }
+.rule { border-top: 1px solid #eef0f4; }
 
-/* === AG1 helpers (Checkout v4) === */
+/* === Clinical helpers (Checkout v5) === */
 .smallcaps { text-transform: uppercase; letter-spacing: 0.14em; font-size: 10.5px; font-weight: 500; }
-.strike { text-decoration: line-through; text-decoration-thickness: 1px; color: #a09d8c; }
-::selection { background: #cde04a; color: #0a0b0d; }
+.strike { text-decoration: line-through; text-decoration-thickness: 1px; color: #a3a8b2; }
+::selection { background: #1c4dff; color: #ffffff; }
 
-/* Warm-paper inputs (checkout only — class-scoped, dashboard untouched) */
+/* Clinical inputs (checkout only — class-scoped, dashboard untouched) */
 .ck-input {
   font-family: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
-  background: #fbf3dd;
-  border: 1px solid #d4c69f;
+  background: #ffffff;
+  border: 1px solid #e6e8ec;
   width: 100%;
   padding: 13px 14px;
   font-size: 14.5px;
   color: #0a0b0d;
-  border-radius: 12px;
+  border-radius: 10px;
   transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
 }
-.ck-input::placeholder { color: #a09d8c; }
+.ck-input::placeholder { color: #a3a8b2; }
 .ck-input:focus {
   outline: none;
-  border-color: #0a0b0d;
-  box-shadow: 0 0 0 4px rgba(10, 11, 13, 0.08);
-  background: #fff8e2;
+  border-color: #1c4dff;
+  box-shadow: 0 0 0 4px rgba(28, 77, 255, 0.12);
+  background: #fbfcff;
 }
 select.ck-input {
   appearance: none; -webkit-appearance: none;
@@ -277,64 +266,82 @@ select.ck-input {
 }
 
 /* Segmented control */
-.seg-track { background: #e4d3ad; border: 1px solid #d4c69f; border-radius: 999px; padding: 4px; }
-.seg-on { background: #0a0b0d; color: #fbf3dd; border-radius: 999px; }
-.seg-on-lime { background: #cde04a; color: #0a0b0d; border-radius: 999px; }
+.seg-track { background: #f6f7f9; border: 1px solid #e6e8ec; border-radius: 999px; padding: 4px; }
+.seg-on {
+  background: #0a0b0d; color: #ffffff; border-radius: 999px;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.08) inset, 0 1px 2px rgba(0,0,0,0.15);
+}
+.gloss-mint {
+  background:
+    radial-gradient(110% 60% at 50% 0%, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0) 55%),
+    linear-gradient(180deg, #15c989 0%, #00a36b 100%);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.55) inset,
+    0 -2px 0 rgba(0, 80, 50, 0.4) inset,
+    0 6px 14px -6px rgba(0, 163, 107, 0.4);
+  color: #ffffff; border-radius: 999px;
+}
 
 /* Plan card */
 .plan {
-  background: #fbf3dd; border: 1px solid #d4c69f; border-radius: 16px;
-  transition: border-color .15s ease, transform .12s ease, box-shadow .15s ease, background .15s ease;
+  background: #ffffff; border: 1px solid #e6e8ec; border-radius: 14px;
+  transition: border-color .15s ease, transform .12s ease, box-shadow .15s ease;
 }
-.plan:hover:not(.on) { border-color: #0a0b0d; transform: translateY(-1px); }
-.plan.on { background: #0a0b0d; color: #fbf3dd; border-color: #0a0b0d; box-shadow: 0 14px 28px -16px rgba(10,11,13,0.4); }
+.plan:hover:not(.on) { border-color: #c8ccd3; transform: translateY(-1px); }
+.plan.on {
+  background: #ffffff; border-color: #1c4dff;
+  box-shadow: 0 0 0 4px rgba(28, 77, 255, 0.10), 0 2px 6px -2px rgba(28, 77, 255, 0.18);
+}
 .plan .ringdot {
-  width: 18px; height: 18px; border-radius: 999px; border: 1.5px solid #c8b993;
+  width: 18px; height: 18px; border-radius: 999px; border: 1.5px solid #d2d6de;
   display: inline-flex; align-items: center; justify-content: center;
   transition: border-color .15s ease, background .15s ease; position: relative;
 }
-.plan.on .ringdot { border-color: #cde04a; background: #cde04a; }
-.plan.on .ringdot::after { content: ''; width: 6px; height: 6px; border-radius: 999px; background: #0a0b0d; }
+.plan.on .ringdot {
+  border-color: #1c4dff;
+  background: radial-gradient(closest-side, #1c4dff 45%, rgba(28,77,255,0) 50%);
+}
+.plan.on .ringdot::after { content: ''; width: 8px; height: 8px; border-radius: 999px; background: #ffffff; opacity: 0; }
 
 /* Save chip */
 .save-chip {
-  background: #cde04a; color: #0a0b0d; border-radius: 999px;
-  padding: 2px 8px; font-size: 10.5px; font-weight: 600; letter-spacing: 0.04em;
+  background: #eaf0ff; color: #1c4dff; border-radius: 999px;
+  padding: 2px 8px; font-size: 10.5px; font-weight: 600; letter-spacing: 0.06em;
 }
 
 /* Accordion step */
-details.step { border-bottom: 1px solid #e3d5b1; padding: 22px 0; }
+details.step { border-bottom: 1px solid #e6e8ec; padding: 22px 0; }
 details.step:last-child { border-bottom: 0; }
 details.step[open] summary .caret { transform: rotate(180deg); }
 details.step summary { list-style: none; cursor: pointer; }
 details.step summary::-webkit-details-marker { display: none; }
 .caret { transition: transform .2s ease; }
 
-/* Lime CTA + state machine */
+/* Ink-black CTA + state machine */
 .cta {
-  position: relative; background: #cde04a; color: #0a0b0d; border-radius: 999px;
+  position: relative; background: #0a0b0d; color: #ffffff; border-radius: 999px;
   box-shadow:
-    0 1px 0 rgba(255,255,255,0.45) inset,
-    0 -1px 0 rgba(0,0,0,0.1) inset,
-    0 1px 2px rgba(10,11,13,0.08),
-    0 12px 24px -10px rgba(174,195,58,0.45);
-  overflow: hidden;
+    0 1px 0 rgba(255,255,255,0.08) inset,
+    0 -1px 0 rgba(0,0,0,0.6) inset,
+    0 1px 2px rgba(10,11,13,0.2),
+    0 12px 24px -10px rgba(10,11,13,0.35);
+  overflow: hidden; isolation: isolate;
   transition: transform .14s cubic-bezier(.2,.7,.2,1), background .15s ease, box-shadow .14s ease;
   -webkit-tap-highlight-color: transparent;
 }
-.cta:hover:not(:disabled) { background: #d8e966; }
+.cta:hover:not(:disabled) { background: #1a1c20; }
 .cta:active:not(:disabled) {
-  transform: translateY(1px) scale(.995); background: #b9cc3d;
-  box-shadow: 0 1px 0 rgba(255,255,255,0.3) inset, 0 -1px 0 rgba(0,0,0,0.1) inset, 0 4px 10px -4px rgba(10,11,13,0.2);
+  transform: translateY(1px) scale(.995); background: #050608;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset, 0 -1px 0 rgba(0,0,0,0.4) inset, 0 4px 10px -4px rgba(10,11,13,0.3);
 }
-.cta:disabled { filter: saturate(0.55) brightness(0.99); cursor: not-allowed; }
+.cta:disabled { filter: saturate(0.55) brightness(0.99); cursor: not-allowed; opacity: 0.85; }
 .cta .arrow-slot {
-  width: 32px; height: 32px; border-radius: 999px; background: rgba(10,11,13,0.10);
+  width: 32px; height: 32px; border-radius: 999px; background: rgba(255,255,255,0.10);
   display: inline-flex; align-items: center; justify-content: center;
   transition: transform .25s cubic-bezier(.2,.7,.2,1), background .15s ease;
 }
-.cta:hover:not(:disabled) .arrow-slot { transform: translateX(3px); background: rgba(10,11,13,0.18); }
-.spinner { width: 16px; height: 16px; border-radius: 999px; border: 2px solid rgba(10,11,13,0.2); border-top-color: #0a0b0d; animation: spin .7s linear infinite; }
+.cta:hover:not(:disabled) .arrow-slot { transform: translateX(3px); background: rgba(255,255,255,0.18); }
+.spinner { width: 16px; height: 16px; border-radius: 999px; border: 2px solid rgba(255,255,255,0.25); border-top-color: #ffffff; animation: spin .7s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes drawcheck { 0% { stroke-dashoffset: 30; opacity: 0; transform: scale(.7); } 20% { opacity: 1; } 100% { stroke-dashoffset: 0; opacity: 1; transform: scale(1); } }
 .check-anim path { stroke-dasharray: 30; stroke-dashoffset: 30; animation: drawcheck .5s cubic-bezier(.2,.7,.2,1) .1s forwards; }
