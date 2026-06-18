@@ -12,7 +12,7 @@
 import { useState, useEffect, useRef } from "react";
 
 import { Icon } from "@/components/icons";
-import { type Bundle } from "@/components/checkout/bundles";
+import { type Bundle, bundlePricing } from "@/components/checkout/bundles";
 
 const PRODUCT_NAME = "Daily Greens Complex";
 
@@ -22,12 +22,14 @@ function dollars(minor: number) {
 
 export interface OrderSummaryCardProps {
   selectedBundle: Bundle;
+  subscribe: boolean;
   payDisabled?: boolean;
   payLoading?: boolean;
 }
 
 export function OrderSummaryCard({
   selectedBundle,
+  subscribe,
   payDisabled = false,
   payLoading = false,
 }: OrderSummaryCardProps) {
@@ -48,9 +50,10 @@ export function OrderSummaryCard({
     }
   }, [payLoading]);
 
-  const total = selectedBundle.totalAmountMinor;
+  const pricing = bundlePricing(selectedBundle, subscribe);
+  const total = pricing.totalMinor;
   const totalFmt = dollars(total);
-  const savings = selectedBundle.savingsMinor ?? 0;
+  const savings = pricing.savingsMinor;
 
   return (
     <div data-section="order-summary" className="bg-paper2 border-t border-line2 px-6 py-6 -mx-6">
@@ -59,17 +62,17 @@ export function OrderSummaryCard({
           <dt className="min-w-0">
             <span className="num text-ink3 mr-1">{selectedBundle.bottleCount}×</span>
             {PRODUCT_NAME}
-            <span className="text-ink3 ml-1">· one-time</span>
+            <span className="text-ink3 ml-1">· {subscribe ? "monthly" : "one-time"}</span>
           </dt>
           <dd className="num shrink-0 whitespace-nowrap">{totalFmt}</dd>
         </div>
         <div className="flex items-baseline justify-between gap-4 text-ink2">
           <dt>Shipping</dt>
-          <dd className="num shrink-0 font-medium">FREE</dd>
+          <dd className="num text-mint font-medium shrink-0">FREE</dd>
         </div>
         {savings > 0 && (
-          <div className="flex items-baseline justify-between gap-4 text-rust font-medium">
-            <dt>Bundle savings</dt>
+          <div className="flex items-baseline justify-between gap-4 text-cobalt font-medium">
+            <dt>{subscribe ? "Subscription discount (20%)" : "Bundle savings"}</dt>
             <dd className="num shrink-0 whitespace-nowrap">−{dollars(savings)}</dd>
           </div>
         )}
@@ -81,6 +84,11 @@ export function OrderSummaryCard({
           <div className="num text-[28px] text-ink leading-none font-medium tracking-tight whitespace-nowrap">
             {totalFmt}<span className="text-[11px] text-ink3 ml-1.5">USD</span>
           </div>
+          {subscribe && (
+            <div className="text-[11px] text-ink3 mt-1">
+              then {totalFmt} every 30 days · cancel anytime
+            </div>
+          )}
         </div>
       </div>
 
@@ -97,7 +105,7 @@ export function OrderSummaryCard({
           <span className="cta-label flex items-center gap-3">
             <Icon.Lock className="w-4 h-4" />
             <span className="flex flex-col items-start leading-tight">
-              <span>Place order — {totalFmt}</span>
+              <span>Rush my order — {totalFmt}</span>
               <span className="text-[11px] font-medium tracking-[0.02em] text-ink/60 mt-0.5">
                 Secure 256-bit checkout
               </span>
