@@ -64,7 +64,7 @@ export function OrderSummaryCard({
             {PRODUCT_NAME}
             <span className="text-ink3 ml-1">· {subscribe ? "monthly" : "one-time"}</span>
           </dt>
-          <dd className="num shrink-0 whitespace-nowrap">{totalFmt}</dd>
+          <dd className="num shrink-0 whitespace-nowrap">{dollars(pricing.listMinor)}</dd>
         </div>
         <div className="flex items-baseline justify-between gap-4 text-ink2">
           <dt>Shipping</dt>
